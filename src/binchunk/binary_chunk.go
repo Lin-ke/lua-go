@@ -57,10 +57,10 @@ type Prototype struct {
 	Constants       []interface{} //空接口模拟联合体。前面有type
 	Upvalues        []Upvalue
 	Protos          []*Prototype
-	LineInfo        []byte    // debug ||  byte = unsigned char int 8= signed char
+	LineInfo        []byte    // debug 和指令表中的指令一一对应
 	AbsLineInfo     []AbsLine // debug
-	LocVars         []LocVar  // debug
-	UpvalueNames    []string  // debug
+	LocVars         []LocVar  // debug 局部变量
+	UpvalueNames    []string  // debug Upvalue名
 }
 
 type Upvalue struct {
