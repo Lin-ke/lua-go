@@ -176,6 +176,7 @@ func (self *reader) readUpvalues() []Upvalue {
 		upvalues[i] = Upvalue{
 			Instack: self.readByte(),
 			Idx:     self.readByte(),
+			Kind:    self.readByte(),
 		}
 	}
 	return upvalues
@@ -190,7 +191,11 @@ func (self *reader) readProtos(parentSource string) []*Prototype {
 }
 
 func (self *reader) readLineInfo() []byte {
-	return nil
+	lineInfos := make([]byte, self.readVarint())
+	for i := range lineInfos {
+		lineInfos[i] = self.readByte()
+	}
+	return lineInfos
 }
 func (self *reader) readAbsLineInfo() []AbsLine {
 	absLineInfos := make([]AbsLine, self.readVarint())
