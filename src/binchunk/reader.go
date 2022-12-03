@@ -55,6 +55,9 @@ func (self *reader) readVar(limit uint64) uint64 {
 func (self *reader) readVarint() int32 {
 	return int32(self.readVar(0x7fffffff))
 }
+func (self *reader) readVaruint() uint32 {
+	return uint32(self.readVar(0xffffffff))
+}
 func (self *reader) readVarSizet() uint64 {
 	return uint64(self.readVar(^uint64(0)))
 }
@@ -116,8 +119,8 @@ func (self *reader) readProto(parentSource string) *Prototype {
 	}
 	return &Prototype{
 		Source:          source,
-		LineDefined:     self.readUint32(),
-		LastLineDefined: self.readUint32(),
+		LineDefined:     self.readVarint(),
+		LastLineDefined: self.readVarint(),
 		NumParams:       self.readByte(),
 		IsVararg:        self.readByte(),
 		MaxStackSize:    self.readByte(),
@@ -126,13 +129,14 @@ func (self *reader) readProto(parentSource string) *Prototype {
 		Upvalues:        self.readUpvalues(),
 		Protos:          self.readProtos(source),
 		LineInfo:        self.readLineInfo(),
+		AbsLineInfo:     self.readAbsLineInfo(),
 		LocVars:         self.readLocVars(),
 		UpvalueNames:    self.readUpvalueNames(),
 	}
 }
 
 func (self *reader) readCode() []uint32 {
-	code := make([]uint32, self.readUint32())
+	code := make([]uint32, self.readVarint())
 	for i := range code {
 		code[i] = self.readUint32()
 	}
@@ -140,7 +144,7 @@ func (self *reader) readCode() []uint32 {
 }
 
 func (self *reader) readConstants() []interface{} {
-	constants := make([]interface{}, self.readUint32())
+	constants := make([]interface{}, self.readVarint())
 	for i := range constants {
 		constants[i] = self.readConstant()
 	}
@@ -152,14 +156,14 @@ func (self *reader) readConstant() interface{} {
 	case TAG_NIL:
 		return nil
 	case TAG_FALSE:
-		return self.readByte() != 0
+		return true
 	case TAG_TRUE:
-		return self.readByte() != 0
+		return false
 	case TAG_INTEGER:
 		return self.readLuaInteger()
 	case TAG_NUMBER:
 		return self.readLuaNumber()
-	case TAG_SHORT_STR, TAG_LONG_STR:
+	case TAG_SHORT_STR, TAG_LONG_STR: //04 ,14
 		return self.readString()
 	default:
 		panic("corrupted!") // todo
@@ -167,7 +171,7 @@ func (self *reader) readConstant() interface{} {
 }
 
 func (self *reader) readUpvalues() []Upvalue {
-	upvalues := make([]Upvalue, self.readUint32())
+	upvalues := make([]Upvalue, self.readVarint())
 	for i := range upvalues {
 		upvalues[i] = Upvalue{
 			Instack: self.readByte(),
@@ -178,7 +182,7 @@ func (self *reader) readUpvalues() []Upvalue {
 }
 
 func (self *reader) readProtos(parentSource string) []*Prototype {
-	protos := make([]*Prototype, self.readUint32())
+	protos := make([]*Prototype, self.readVarint())
 	for i := range protos {
 		protos[i] = self.readProto(parentSource)
 	}
@@ -188,21 +192,30 @@ func (self *reader) readProtos(parentSource string) []*Prototype {
 func (self *reader) readLineInfo() []byte {
 	return nil
 }
-
+func (self *reader) readAbsLineInfo() []AbsLine {
+	absLineInfos := make([]AbsLine, self.readVarint())
+	for i := range absLineInfos {
+		absLineInfos[i] = AbsLine{
+			Pc:   self.readVarint(),
+			Line: self.readVarint(),
+		}
+	}
+	return absLineInfos
+}
 func (self *reader) readLocVars() []LocVar {
-	locVars := make([]LocVar, self.readUint32())
+	locVars := make([]LocVar, self.readVarint())
 	for i := range locVars {
 		locVars[i] = LocVar{
 			VarName: self.readString(),
-			StartPC: self.readUint32(),
-			EndPC:   self.readUint32(),
+			StartPC: self.readVarint(),
+			EndPC:   self.readVarint(),
 		}
 	}
 	return locVars
 }
 
 func (self *reader) readUpvalueNames() []string {
-	names := make([]string, self.readUint32())
+	names := make([]string, self.readVarint())
 	for i := range names {
 		names[i] = self.readString()
 	}

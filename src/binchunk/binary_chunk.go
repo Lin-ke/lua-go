@@ -2,7 +2,7 @@ package binchunk
 
 const (
 	LUA_SIGNATURE    = "\x1bLua"
-	LUAC_VERSION     = 0x53
+	LUAC_VERSION     = 0x54
 	LUAC_FORMAT      = 0
 	LUAC_DATA        = "\x19\x93\r\n\x1a\n"
 	INSTRUCTION_SIZE = 4
@@ -48,8 +48,8 @@ type header struct {
 
 type Prototype struct {
 	Source          string // debug, 源文件名。 short : 0x（name_length+1）+1 @ name;
-	LineDefined     uint32 //  start
-	LastLineDefined uint32 // end。如果是main则都是0x80
+	LineDefined     int32  //  start
+	LastLineDefined int32  // end。如果是main则都是0x80
 	NumParams       byte
 	IsVararg        byte          // 变长参数
 	MaxStackSize    byte          // 寄存器
@@ -71,8 +71,8 @@ type Upvalue struct {
 
 type LocVar struct {
 	VarName string
-	StartPC uint32
-	EndPC   uint32
+	StartPC int32
+	EndPC   int32
 }
 
 type AbsLine struct {
