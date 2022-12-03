@@ -15,7 +15,7 @@ func (self *reader) readByte() byte {
 	return b
 }
 
-func (self *reader) readBytes(n uint) []byte {
+func (self *reader) readBytes(n uint64) []byte {
 	bytes := self.data[:n]
 	self.data = self.data[n:]
 	return bytes
@@ -33,6 +33,32 @@ func (self *reader) readUint64() uint64 {
 	return i
 }
 
+// size_t -> varint ( uint64 )
+// TODO: 异常处理
+func (self *reader) readVar(limit uint64) uint64 {
+	var x uint64
+	var a uint8 = 0x00
+	for (a & 0x80) == 0 {
+
+		a = self.data[0]
+
+		x = (x << 7) | (uint64)(a&0x7f)
+
+		if x > limit {
+			panic("overflow")
+		}
+
+		self.data = self.data[1:]
+	}
+	return x
+}
+func (self *reader) readVarint() int32 {
+	return int32(self.readVar(0x7fffffff))
+}
+func (self *reader) readVarSizet() uint64 {
+	return uint64(self.readVar(^uint64(0)))
+}
+
 func (self *reader) readLuaInteger() int64 {
 	return int64(self.readUint64())
 }
@@ -42,15 +68,15 @@ func (self *reader) readLuaNumber() float64 {
 }
 
 func (self *reader) readString() string {
-	size := uint(self.readByte())
+	size := self.readVarSizet()
 	if size == 0 {
 		return ""
 	}
 	if size == 0xFF {
-		size = uint(self.readUint64()) // size_t
+		size = self.readVarSizet() // size_t
 	}
 	bytes := self.readBytes(size - 1)
-	return string(bytes) // todo
+	return string(bytes)
 }
 
 func (self *reader) checkHeader() {
@@ -65,12 +91,6 @@ func (self *reader) checkHeader() {
 	}
 	if string(self.readBytes(6)) != LUAC_DATA {
 		panic("corrupted!")
-	}
-	if self.readByte() != CINT_SIZE {
-		panic("int size mismatch!")
-	}
-	if self.readByte() != CSIZET_SIZE {
-		panic("size_t size mismatch!")
 	}
 	if self.readByte() != INSTRUCTION_SIZE {
 		panic("instruction size mismatch!")
@@ -131,7 +151,9 @@ func (self *reader) readConstant() interface{} {
 	switch self.readByte() {
 	case TAG_NIL:
 		return nil
-	case TAG_BOOLEAN:
+	case TAG_FALSE:
+		return self.readByte() != 0
+	case TAG_TRUE:
 		return self.readByte() != 0
 	case TAG_INTEGER:
 		return self.readLuaInteger()
@@ -163,12 +185,8 @@ func (self *reader) readProtos(parentSource string) []*Prototype {
 	return protos
 }
 
-func (self *reader) readLineInfo() []uint32 {
-	lineInfo := make([]uint32, self.readUint32())
-	for i := range lineInfo {
-		lineInfo[i] = self.readUint32()
-	}
-	return lineInfo
+func (self *reader) readLineInfo() []byte {
+	return nil
 }
 
 func (self *reader) readLocVars() []LocVar {
