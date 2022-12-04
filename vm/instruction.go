@@ -61,3 +61,28 @@ func (self Instruction) OpName() string {
 func (self Instruction) OpMode() byte {
 	return opcodes[self.Opcode()].opmode & 0x7
 }
+
+//	func opmode(callMetamethod byte, argCMode byte, argBMode byte, testFlag byte, setAFlag byte, opMode byte) byte {
+//		return (((callMetamethod) << 7) | ((argCMode) << 6) | ((argBMode) << 5) | ((testFlag) << 4) | ((setAFlag) << 3) | (opMode))
+//	}
+func (self Instruction) BMode() byte {
+	// boolean
+	return (opcodes[self.Opcode()].opmode) >> 5 & 0x1
+}
+func (self Instruction) CMode() byte {
+	// boolean
+	return (opcodes[self.Opcode()].opmode) >> 6 & 0x1
+}
+func (self Instruction) SetA() byte {
+	// boolean
+	return (opcodes[self.Opcode()].opmode) >> 3 & 0x1
+}
+
+func (self Instruction) MM() byte {
+	// boolean
+	return (opcodes[self.Opcode()].opmode) >> 7 & 0x1
+}
+func (self Instruction) TMode() byte {
+	// boolean
+	return (opcodes[self.Opcode()].opmode) >> 4 & 0x1
+}
