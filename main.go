@@ -2,22 +2,20 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"luago54/binchunk"
-	"os"
 )
 
-func main() {
-	if len(os.Args) > 1 {
-		data, err := ioutil.ReadFile(os.Args[1])
-		if err != nil {
-			panic(err)
-		}
+// func main() {
+// 	if len(os.Args) > 1 {
+// 		data, err := ioutil.ReadFile(os.Args[1])
+// 		if err != nil {
+// 			panic(err)
+// 		}
 
-		proto := binchunk.Undump(data)
-		list(proto)
-	}
-}
+// 		proto := binchunk.Undump(data)
+// 		list(proto)
+// 	}
+// }
 
 func list(f *binchunk.Prototype) {
 	printHeader(f)
