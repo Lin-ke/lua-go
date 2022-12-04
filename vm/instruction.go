@@ -2,6 +2,8 @@ package vm
 
 const MAXARG_Bx = 1<<17 - 1       // 262143
 const MAXARG_sBx = MAXARG_Bx >> 1 // 131071
+const MAXARG_J = 1<<25 - 1
+const MAXARG_sJ = MAXARG_J >> 1
 
 /*
 ===========================================================================
@@ -28,7 +30,7 @@ isJ                           sJ(25)                     |   Op(7)     |
 type Instruction uint32
 
 func (self Instruction) Opcode() int {
-	return int(self & 0x3F)
+	return int(self & 0x7F) //0x111 1111
 }
 
 // BC 是寄存器索引
@@ -52,6 +54,9 @@ func (self Instruction) AsBx() (a, sbx int) {
 
 func (self Instruction) Ax() int {
 	return int(self >> 7)
+}
+func (self Instruction) SJ() int {
+	return int(self>>7) - MAXARG_sJ
 }
 
 func (self Instruction) OpName() string {

@@ -98,6 +98,10 @@ func printOperands(i Instruction) {
 	case IAx:
 		ax := i.Ax()
 		fmt.Printf("%d", -1-ax)
+
+	case IsJ:
+		sJ := i.SJ()
+		fmt.Printf("%d", sJ)
 	}
 }
 
