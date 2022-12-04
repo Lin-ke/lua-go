@@ -87,7 +87,7 @@ func printOperands(i Instruction) {
 		}
 	case IABx:
 		a, bx := i.ABx()
-
+		// TODO: complete BX
 		fmt.Printf("%d", a)
 		if i.BMode() == 0 {
 			fmt.Printf(" %d", -1-bx)
