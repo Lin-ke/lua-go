@@ -23,14 +23,13 @@ func (self *luaStack) check(n int) {
 	}
 }
 
-// 需要考虑线程么？
 func (self *luaStack) push(val luaValue) {
 	if self.top == len(self.slots) {
 		panic("stack overflow!")
 	}
 	self.slots[self.top] = val
 	self.top++
-}
+} // 需要考虑线程么？
 
 func (self *luaStack) pop() luaValue {
 	if self.top < 1 {
@@ -63,6 +62,12 @@ func (self *luaStack) get(idx int) luaValue {
 		return self.slots[absIdx-1]
 	}
 	return nil
+}
+
+func (self *luaStack) tget(idx int) luaValue {
+
+	return self.slots[self.absIndex(idx)-1]
+
 }
 
 func (self *luaStack) set(idx int, val luaValue) {
