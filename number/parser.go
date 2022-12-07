@@ -5,6 +5,13 @@ package number
 // import "strings"
 import "strconv"
 
+/*
+流程： // default 一般由0替代
+ 1. pick off sign
+ 2. ParseUint
+    1.判断进制...
+ 3. 判断是否溢出，如果是返回各自MaxVal
+*/
 func ParseInteger(str string) (int64, bool) {
 	i, err := strconv.ParseInt(str, 10, 64)
 	return i, err == nil
