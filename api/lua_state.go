@@ -1,7 +1,8 @@
 package api
 
 type LuaType = int
-
+type ArithOp = int
+type CompareOp int
 type LuaState interface {
 	/* basic stack manipulation */
 	GetTop() int
