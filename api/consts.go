@@ -31,3 +31,8 @@ const (
 	LUA_OPUNM         // -
 	LUA_OPBNOT        // ~
 )
+const (
+	LUA_OPEQ = iota
+	LUA_OPLT
+	LUA_OPLE
+)

@@ -44,7 +44,7 @@ type LuaState interface {
 	PushString(s string)
 	/* Comparison and arithmetic functions */
 	Arith(op ArithOp)
-	Compare(idx1, idx2 int, op CompareOp) bool
+	Compare(idx1, idx2 int, op CompareOp) bool // 两个索引
 	/* miscellaneous functions */
 	Len(idx int)
 	Concat(n int)
