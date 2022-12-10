@@ -1,12 +1,12 @@
 # lua-go
 A complier and VM for lua5.4 in GOLANG by Lin-ke.
 
-FOLLOWING @zxh0
+FOLLOWING @zxh0, writer of book /implement lua by your self
 
 # TILL NOW:
- -> BINCHUNK read (done)
+ -> LUA Binchunk read (done)
 
- -> LUA_STATE (doing)
+ -> LUA State (doing)
 
     apis (doing)
 
@@ -14,13 +14,17 @@ FOLLOWING @zxh0
 
     stack (done)
 
+-> LUA VM(doing)
+    
+    
+->LUA Complier
 
-- Reference:
-https://github.com/yuin/gopher-lua
+# Reference:
+- https://github.com/yuin/gopher-lua
 
-https://github.com/Shopify/go-lua
+- https://github.com/Shopify/go-lua
 
-https://github.com/milochristiansen/lua
+- https://github.com/milochristiansen/lua
 
-https://github.com/zxh0/luago-book
+- https://github.com/zxh0/luago-book
 

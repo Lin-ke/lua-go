@@ -8,6 +8,7 @@ import (
 
 // lobject.c #56
 /*
+
 const (
 	LUA_OPADD  = iota // +
 	LUA_OPSUB         // -
