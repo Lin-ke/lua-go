@@ -43,6 +43,8 @@ func FFloorDiv(a, b float64) float64 {
 	return math.Floor(a / b)
 }
 
+// LUA 的右移是无符号右移
+// golang则是有符号右移。
 func ShiftLeft(a, n int64) int64 {
 	if n >= 0 {
 		return a << uint64(n)

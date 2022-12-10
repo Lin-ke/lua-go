@@ -7,8 +7,11 @@ FOLLOWING @zxh0
  -> BINCHUNK read (done)
 
  -> LUA_STATE (doing)
+
     apis (doing)
+
     instructions (doing)
+
     stack (done)
 
 
@@ -20,3 +23,4 @@ https://github.com/Shopify/go-lua
 https://github.com/milochristiansen/lua
 
 https://github.com/zxh0/luago-book
+

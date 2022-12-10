@@ -42,6 +42,7 @@ type LuaState interface {
 	PushInteger(n int64)
 	PushNumber(n float64)
 	PushString(s string)
+	/* get functions */
 	/* Comparison and arithmetic functions */
 	Arith(op ArithOp)
 	Compare(idx1, idx2 int, op CompareOp) bool // 两个索引

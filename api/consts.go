@@ -12,6 +12,7 @@ const (
 	LUA_TFUNCTION
 	LUA_TUSERDATA
 	LUA_TTHREAD
+	LUA_TNUMBERTYPES
 )
 
 /* arithmetic functions */

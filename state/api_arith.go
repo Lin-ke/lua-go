@@ -1,10 +1,30 @@
 package state
 
 import (
-	. "luago54/api"
+	Const "luago54/api"
 	"luago54/number"
 	"math"
 )
+
+// lobject.c #56
+/*
+const (
+	LUA_OPADD  = iota // +
+	LUA_OPSUB         // -
+	LUA_OPMUL         // *
+	LUA_OPMOD         // %
+	LUA_OPPOW         // ^
+	LUA_OPDIV         // /
+	LUA_OPIDIV        // //
+	LUA_OPBAND        // &
+	LUA_OPBOR         // |
+	LUA_OPBXOR        // ~
+	LUA_OPSHL         // <<
+	LUA_OPSHR         // >>
+	LUA_OPUNM         // -
+	LUA_OPBNOT        // ~
+)
+*/
 
 type operator struct {
 	integerFunc func(int64, int64) int64
@@ -53,18 +73,18 @@ var operators = []operator{
 
 // [-(2|1), +1, e]
 // http://www.lua.org/manual/5.4/manual.html#lua_arith
-func (self *luaState) Arith(op ArithOp) {
+func (L *luaState) Arith(op Const.ArithOp) {
 	var a, b luaValue // operands
-	b = self.stack.pop()
-	if op != LUA_OPUNM && op != LUA_OPBNOT {
-		a = self.stack.pop()
+	b = L.stack.pop()
+	if op != Const.LUA_OPUNM && op != Const.LUA_OPBNOT {
+		a = L.stack.pop()
 	} else {
 		a = b
 	}
 
 	operator := operators[op]
 	if result := _arith(a, b, operator); result != nil {
-		self.stack.push(result)
+		L.stack.push(result)
 	} else {
 		panic("arithmetic error!")
 	}
