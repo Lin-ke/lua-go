@@ -1,5 +1,6 @@
 package binchunk
 
+// luadump.c
 const (
 	LUA_SIGNATURE    = "\x1bLua"
 	LUAC_VERSION     = 0x54
@@ -57,7 +58,7 @@ type Prototype struct {
 	Constants       []interface{} //空接口模拟联合体。前面有type
 	Upvalues        []Upvalue
 	Protos          []*Prototype
-	LineInfo        []byte    // debug 和指令表中的指令一一对应
+	LineInfo        []byte    // debug 和指令表中的指令一一对应,现在存储的是增量值。
 	AbsLineInfo     []AbsLine // debug
 	LocVars         []LocVar  // debug 局部变量
 	UpvalueNames    []string  // debug Upvalue名

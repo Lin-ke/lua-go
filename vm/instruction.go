@@ -2,8 +2,9 @@ package vm
 
 const MAXARG_Bx = 1<<17 - 1       // 262143
 const MAXARG_sBx = MAXARG_Bx >> 1 // 131071
-const MAXARG_J = 1<<25 - 1
-const MAXARG_sJ = MAXARG_J >> 1
+
+const MAXARG_J = 1<<25 - 1      //33554431
+const MAXARG_sJ = MAXARG_J >> 1 //16777215
 
 /*
 ===========================================================================
@@ -29,65 +30,65 @@ isJ                           sJ(25)                     |   Op(7)     |
 */
 type Instruction uint32
 
-func (self Instruction) Opcode() int {
-	return int(self & 0x7F) //0x111 1111
+func (i Instruction) Opcode() int {
+	return int(i & 0x7F) //0x111 1111
 }
 
 // BC 是寄存器索引
-func (self Instruction) ABC() (a, b, c int) {
-	a = int(self >> 7 & 0xFF)
-	c = int(self >> 16 & 0x1FF)
-	b = int(self >> 24 & 0x1FF)
+func (i Instruction) ABC() (a, b, c int) {
+	a = int(i >> 7 & 0xFF)
+	b = int(i >> 16 & 0xFF)
+	c = int(i >> 24 & 0xFF)
 	return
 }
 
-func (self Instruction) ABx() (a, bx int) {
-	a = int(self >> 7 & 0xFF)
-	bx = int(self >> 15)
+func (i Instruction) ABx() (a, bx int) {
+	a = int(i >> 7 & 0xFF)
+	bx = int(i >> 15)
 	return
 }
 
-func (self Instruction) AsBx() (a, sbx int) {
-	a, bx := self.ABx()
+func (i Instruction) AsBx() (a, sbx int) {
+	a, bx := i.ABx()
 	return a, bx - MAXARG_sBx
 }
 
-func (self Instruction) Ax() int {
-	return int(self >> 7)
+func (i Instruction) Ax() int {
+	return int(i >> 7)
 }
-func (self Instruction) SJ() int {
-	return int(self>>7) - MAXARG_sJ
-}
-
-func (self Instruction) OpName() string {
-	return opcodes[self.Opcode()].name
+func (i Instruction) SJ() int {
+	return int(i>>7) - MAXARG_sJ
 }
 
-func (self Instruction) OpMode() byte {
-	return opcodes[self.Opcode()].opmode & 0x7
+func (i Instruction) OpName() string {
+	return opcodes[i.Opcode()].name
+}
+
+func (i Instruction) OpMode() byte {
+	return opcodes[i.Opcode()].opmode & 0x7
 }
 
 //	func opmode(callMetamethod byte, argCMode byte, argBMode byte, testFlag byte, setAFlag byte, opMode byte) byte {
 //		return (((callMetamethod) << 7) | ((argCMode) << 6) | ((argBMode) << 5) | ((testFlag) << 4) | ((setAFlag) << 3) | (opMode))
 //	}
-func (self Instruction) BMode() byte {
+func (i Instruction) BMode() byte {
 	// boolean
-	return (opcodes[self.Opcode()].opmode) >> 5 & 0x1
+	return (opcodes[i.Opcode()].opmode) >> 5 & 0x1
 }
-func (self Instruction) CMode() byte {
+func (i Instruction) CMode() byte {
 	// boolean
-	return (opcodes[self.Opcode()].opmode) >> 6 & 0x1
+	return (opcodes[i.Opcode()].opmode) >> 6 & 0x1
 }
-func (self Instruction) SetA() byte {
+func (i Instruction) SetA() byte {
 	// boolean
-	return (opcodes[self.Opcode()].opmode) >> 3 & 0x1
+	return (opcodes[i.Opcode()].opmode) >> 3 & 0x1
 }
 
-func (self Instruction) MM() byte {
+func (i Instruction) MM() byte {
 	// boolean
-	return (opcodes[self.Opcode()].opmode) >> 7 & 0x1
+	return (opcodes[i.Opcode()].opmode) >> 7 & 0x1
 }
-func (self Instruction) TMode() byte {
+func (i Instruction) TMode() byte {
 	// boolean
-	return (opcodes[self.Opcode()].opmode) >> 4 & 0x1
+	return (opcodes[i.Opcode()].opmode) >> 4 & 0x1
 }
