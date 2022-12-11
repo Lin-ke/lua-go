@@ -1,5 +1,6 @@
 package state
 
+// secretly added apis for vm implementation
 func (L *luaState) PC() int {
 	return L.pc
 }
@@ -29,6 +30,6 @@ func (L *luaState) GetRK(rk int) {
 	}
 }
 
-func (L *luaState) GetReg() *luaStack {
-	return L.stack
+func (L *luaState) Set(idx int, val luaValue) {
+	L.stack.set(idx, val)
 }

@@ -41,7 +41,7 @@ func (L *luaStack) pop() luaValue {
 	return val
 }
 
-// idx -1 ==> L.top
+// idx -L.top => -1 => 1 => L.top
 // 到后面会完善
 
 func (L *luaStack) absIndex(idx int) int {
