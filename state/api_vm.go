@@ -22,6 +22,7 @@ func (L *luaState) GetConst(idx int) {
 	L.stack.push(c)
 }
 
+// 使用常量或者使用寄存器
 func (L *luaState) GetRK(rk int) {
 	if rk > 0xFF { // constant
 		L.GetConst(rk & 0xFF)

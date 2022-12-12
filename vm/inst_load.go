@@ -8,7 +8,7 @@ import (
 
 // R(A), R(A+1), ..., R(A+B) := nil
 func loadNil(i Instruction, vm LuaVM) {
-	a, b, _ := i.ABC()
+	a, _, b, _ := i.ABC()
 	for i := a + 1; i <= a+b+1; i++ {
 		vm.Set(i, nil)
 	}
@@ -16,11 +16,11 @@ func loadNil(i Instruction, vm LuaVM) {
 
 // R[A] := false
 func loadFalse(i Instruction, vm LuaVM) {
-	a, _, _ := i.ABC()
+	a, _, _, _ := i.ABC()
 	vm.Set(a+1, false)
 }
 func LOADTRUE(i Instruction, vm LuaVM) {
-	a, _, _ := i.ABC()
+	a, _, _, _ := i.ABC()
 	vm.Set(a+1, true)
 }
 
@@ -46,7 +46,7 @@ func loadKx(i Instruction, vm LuaVM) {
 
 // R[A] := false; pc++	(*)
 func lFalseSkip(i Instruction, vm LuaVM) {
-	a, _, _ := i.ABC()
+	a, _, _, _ := i.ABC()
 	a += 1
 	vm.Set(a, false)
 	vm.AddPC(1)

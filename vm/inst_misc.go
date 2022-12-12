@@ -6,7 +6,7 @@ import (
 
 // R(A) := R(B)
 func move(i Instruction, vm LuaVM) {
-	a, b, _ := i.ABC()
+	a, _, b, _ := i.ABC()
 	// reg_index + 1 = stack_index.
 	a += 1
 	b += 1

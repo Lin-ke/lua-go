@@ -23,7 +23,7 @@ import (
 func printOperands(i Instruction) {
 	switch i.OpMode() {
 	case IABC:
-		a, b, c := i.ABC()
+		a, _, b, c := i.ABC()
 
 		fmt.Printf("%d", a)
 		if i.BMode() != 0 {
