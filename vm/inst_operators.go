@@ -19,13 +19,29 @@ func shr(i Instruction, vm LuaVM)  { _binaryArith(i, vm, LUA_OPSHR) }  // >>
 func unm(i Instruction, vm LuaVM)  { _unaryArith(i, vm, LUA_OPUNM) }   // -
 func bnot(i Instruction, vm LuaVM) { _unaryArith(i, vm, LUA_OPBNOT) }  // ~
 
-// R(A) := RK(B) op RK(C)
+func addi(i Instruction, vm LuaVM) { _binaryscArith(i, vm, LUA_OPADD) }
+func shri(i Instruction, vm LuaVM) { _binaryscArith(i, vm, LUA_OPSHR) }
+func shli(i Instruction, vm LuaVM) { _binaryscArith(i, vm, LUA_OPSHL) }
+
+// R(A) := R[B] op R[C]
 func _binaryArith(i Instruction, vm LuaVM, op ArithOp) {
 	a, _, b, c := i.ABC()
 	a += 1
+	b += 1
+	c += 1
+	vm.PushValue(b)
+	vm.PushValue(c)
+	vm.Arith(op)
+	vm.Replace(a)
+}
 
-	vm.GetRK(b)
-	vm.GetRK(c)
+// R(A) = R(B) op sC
+func _binaryscArith(i Instruction, vm LuaVM, op ArithOp) {
+	a, _, b, c := i.ABC()
+	a += 1
+	b += 1
+	vm.PushValue(b)
+	vm.Push(c)
 	vm.Arith(op)
 	vm.Replace(a)
 }

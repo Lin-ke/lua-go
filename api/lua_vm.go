@@ -9,4 +9,5 @@ type LuaVM interface {
 	GetConst(idx int)
 	GetRK(rk int)
 	Set(idx int, val interface{})
+	Push(val interface{})
 }

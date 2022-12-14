@@ -34,3 +34,6 @@ func (L *luaState) GetRK(rk int) {
 func (L *luaState) Set(idx int, val luaValue) {
 	L.stack.set(idx, val)
 }
+func (L *luaState) Push(idx int, val luaValue) {
+	L.stack.push(val)
+}
