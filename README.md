@@ -1,5 +1,5 @@
 # lua-go
-A complier and VM for lua5.4 in GOLANG by Lin-ke.
+A complier and VM for lua5.4.4 in GOLANG by Lin-ke.
 
 FOLLOWING @zxh0, writer of book /implement lua by your self
 
@@ -10,12 +10,16 @@ FOLLOWING @zxh0, writer of book /implement lua by your self
 
     apis (doing)
 
-    instructions (doing)
+    instructions (done)
 
     stack (done)
 
 -> LUA VM(doing)
+
+    complete 51/82 instructions
     
+    
+-> Debugging tools and tests
     
 ->LUA Complier
 

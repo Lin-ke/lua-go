@@ -1,4 +1,4 @@
-﻿package test
+﻿package state
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	vm "luago54/vm"
 )
 
-func printStack(ls api.LuaState) {
+func printState(ls api.LuaState) {
 	top := ls.GetTop()
 	for i := 1; i <= top; i++ {
 		t := ls.Type(i)
@@ -24,6 +24,32 @@ func printStack(ls api.LuaState) {
 		}
 	}
 	fmt.Println()
+}
+
+func printStack(L *luaStack) {
+	fmt.Printf("top:%d", L.top)
+	for i := 0; i < L.top; i++ {
+		printLuaval(L.slots[i])
+	}
+	fmt.Println()
+}
+
+func printLuaval(val luaValue) {
+
+	switch v := val.(type) {
+	case bool:
+		fmt.Printf("[%t]", v)
+	case int64:
+		fmt.Printf("[%d]", v)
+	case float64:
+		fmt.Printf("[%f]", v)
+	case string:
+		fmt.Printf("[%q]", v)
+	case nil:
+		fmt.Printf("[nil]")
+	default: // other values
+		fmt.Printf("[%s]", v)
+	}
 }
 
 // ///////////

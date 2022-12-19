@@ -19,7 +19,7 @@ func loadFalse(i Instruction, vm LuaVM) {
 	a, _, _, _ := i.ABC()
 	vm.Set(a+1, false)
 }
-func LOADTRUE(i Instruction, vm LuaVM) {
+func loadTrue(i Instruction, vm LuaVM) {
 	a, _, _, _ := i.ABC()
 	vm.Set(a+1, true)
 }
@@ -55,7 +55,7 @@ func lFalseSkip(i Instruction, vm LuaVM) {
 func loadI(i Instruction, vm LuaVM) {
 	a, sBx := i.AsBx()
 	a += 1
-	vm.Set(a, sBx)
+	vm.Set(a, (int64)(sBx))
 }
 func loadF(i Instruction, vm LuaVM) {
 	a, sBx := i.AsBx()

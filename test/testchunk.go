@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func test002() {
+func Test002() {
 	if len(os.Args) > 1 {
 		data, err := ioutil.ReadFile(os.Args[1])
 		if err != nil {

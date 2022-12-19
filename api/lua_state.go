@@ -44,24 +44,24 @@ type LuaState interface {
 	PushInteger(n int64)
 	PushNumber(n float64)
 	PushString(s string)
-	/* get functions */
-	NewTable()
-	CreateTable(nArr, nRec int)
-	GetTable(idx int) LuaType
-	GetField(idx int, k string) LuaType
-	GetI(idx int, i int64) LuaType
-	RawGet(idx int) LuaType
-	RawGetI(idx int, i int64) LuaType
-	GetMetatable(idx int) bool
-	GetGlobal(name string) LuaType
-	/* set functions */
-	SetTable(idx int)
-	SetField(idx int, k string)
-	SetI(idx int, i int64)
-	RawSet(idx int)
-	RawSetI(idx int, i int64)
-	SetMetatable(idx int)
-	SetGlobal(name string)
+	// /* get functions */
+	// NewTable()
+	// CreateTable(nArr, nRec int)
+	// GetTable(idx int) LuaType
+	// GetField(idx int, k string) LuaType
+	// GetI(idx int, i int64) LuaType
+	// RawGet(idx int) LuaType
+	// RawGetI(idx int, i int64) LuaType
+	// GetMetatable(idx int) bool
+	// GetGlobal(name string) LuaType
+	// /* set functions */
+	// SetTable(idx int)
+	// SetField(idx int, k string)
+	// SetI(idx int, i int64)
+	// RawSet(idx int)
+	// RawSetI(idx int, i int64)
+	// SetMetatable(idx int)
+	// SetGlobal(name string)
 	/* Comparison and arithmetic functions */
 	Arith(op ArithOp)
 	Compare(idx1, idx2 int, op CompareOp) bool // 两个索引

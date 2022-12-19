@@ -1,5 +1,7 @@
 package vm
 
+import api "luago54/api"
+
 const MAXARG_Bx = 1<<17 - 1       // 262143
 const MAXARG_sBx = MAXARG_Bx >> 1 // 131071
 
@@ -93,4 +95,14 @@ func (i Instruction) MM() byte {
 func (i Instruction) TMode() byte {
 	// boolean
 	return (opcodes[i.Opcode()].opmode) >> 4 & 0x1
+}
+
+func (i Instruction) Execute(vm api.LuaVM) {
+	action := opcodes[i.Opcode()].action
+	if action != nil {
+		action(i, vm)
+	} else if i.OpName() == "VARARGPREP" {
+	} else {
+		panic(i.OpName())
+	}
 }

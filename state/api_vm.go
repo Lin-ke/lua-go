@@ -31,14 +31,14 @@ func (L *luaState) GetRK(rk int) {
 	}
 }
 
-func (L *luaState) Set(idx int, val luaValue) {
+func (L *luaState) Set(idx int, val interface{}) {
 	L.stack.set(idx, val)
 }
 
-func (L *luaState) Push(idx int, val luaValue) {
+func (L *luaState) Push(val interface{}) {
 	L.stack.push(val)
 }
 
-func (L *luaState) Get(idx int) luaValue {
+func (L *luaState) Get(idx int) interface{} {
 	return L.stack.get(idx)
 }

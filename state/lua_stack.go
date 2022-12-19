@@ -1,5 +1,9 @@
 package state
 
+import "fmt"
+
+var debug bool = true
+
 type luaStack struct {
 	slots []luaValue
 	top   int
@@ -75,6 +79,12 @@ func (L *luaStack) set(idx int, val luaValue) {
 	absIdx := L.absIndex(idx)
 	if absIdx > 0 && absIdx <= L.top {
 		L.slots[absIdx-1] = val // 设定开始是1的问题
+		//debug
+		if debug {
+			fmt.Printf("Set slot %d\n", absIdx)
+			printStack(L)
+		}
+
 		return
 	}
 	panic("invalid index!")
