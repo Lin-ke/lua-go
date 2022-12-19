@@ -3,8 +3,8 @@ package state
 import Const "luago54/api"
 
 // NAN 的比较：
-// NAN 对数字和inf均false 对nan 返回true。
-
+// NAN return false to everything, nan == nan = false.
+// golang has achieved it.
 // [-0, +0, e]
 // http://www.lua.org/manual/5.4/manual.html#lua_compare
 func (L *luaState) Compare(idx1, idx2 int, op Const.CompareOp) bool {

@@ -61,6 +61,7 @@ func (L *luaStack) get(idx int) luaValue {
 	if absIdx > 0 && absIdx <= L.top {
 		return L.slots[absIdx-1]
 	}
+	// or panic?
 	return nil
 }
 

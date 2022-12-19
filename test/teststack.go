@@ -1,11 +1,11 @@
-package main
+package test
 
 import (
 	// . "luago54/api"
 	_ "luago54/binchunk"
 )
 
-// func main() {
+// func test005() {
 // 	ls := state.New(0, nil)
 // 	ls.PushInteger(1)
 // 	ls.PushString("2.0")
