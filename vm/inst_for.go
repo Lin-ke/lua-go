@@ -5,41 +5,7 @@ import (
 	"math"
 )
 
-//lvm.c #197
-/*
-** Prepare a numerical for loop (opcode OP_FORPREP).
-** Return true to skip the loop. Otherwise,
-** after preparation, stack will be as follows:
-**   ra : internal index (safe copy of the control variable)
-**   ra + 1 : loop counter (integer loops) or limit (float loops)
-**   ra + 2 : step
-**   ra + 3 : control variable
- */
-func IsInteger(a interface{}) bool {
-	_, ok := a.(int64)
-	return ok
-}
-func IsFloat(a interface{}) bool {
-	_, ok := a.(float64)
-	return ok
-}
-func IsNumber(a interface{}) bool {
-	return IsInteger(a) || IsFloat(a)
-}
-func _toInt(a interface{}) (int64, bool) {
-	switch a.(type) {
-	case int64:
-		a, _ := a.(int64)
-		return a, true
-	case float64:
-		a, _ := a.(float64)
-		return _float2int(a)
-	default:
-		panic("err")
-	}
-
-}
-
+// cut
 func _float2int(a float64) (int64, bool) {
 	if a > math.MaxInt64 {
 		return math.MaxInt64, false
@@ -63,6 +29,16 @@ func _toNumberType(a interface{}) (int64, float64, bool) {
 	panic("err")
 }
 
+//lvm.c #197
+/*
+** Prepare a numerical for loop (opcode OP_FORPREP).
+** Return true to skip the loop. Otherwise,
+** after preparation, stack will be as follows:
+**   ra : internal index (safe copy of the control variable)
+**   ra + 1 : loop counter (integer loops) or limit (float loops)
+**   ra + 2 : step
+**   ra + 3 : control variable
+ */
 // panic will replaced by print errors
 // prior to Number ,if step/init is string.
 func forPrep(i Instruction, vm LuaVM) {
@@ -161,11 +137,6 @@ func forilimit(istep, iinit int64, limit interface{}) (bool, int64) {
 	}
 }
 
-// R(A)+=R(A+2);
-//
-//	if R(A) <?= R(A+1) then {
-//	  pc+=Bx; R(A+3)=R(A)
-//	}
 func forLoop(i Instruction, vm LuaVM) {
 	a, Bx := i.ABx()
 	a += 1

@@ -2,7 +2,7 @@ package state
 
 import "fmt"
 
-var debug bool = true
+var printstack bool = false
 
 type luaStack struct {
 	slots []luaValue
@@ -80,7 +80,7 @@ func (L *luaStack) set(idx int, val luaValue) {
 	if absIdx > 0 && absIdx <= L.top {
 		L.slots[absIdx-1] = val // 设定开始是1的问题
 		//debug
-		if debug {
+		if printstack {
 			fmt.Printf("Set slot %d\n", absIdx)
 			printStack(L)
 		}

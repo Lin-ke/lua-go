@@ -2,9 +2,6 @@ package main
 
 import "luago54/test"
 
-const MAXARG_J = 1<<25 - 1      //33554431
-const MAXARG_sJ = MAXARG_J >> 1 //16777215
-
 func main() {
 	test.Test006()
 }
@@ -18,3 +15,9 @@ func main() {
 // var b int64 = -1
 // print((uint64)(a + b))
 // print((uint64)(a) - uint64(b))
+
+// a, f := number.FloatToInteger(1e100)
+// print(a, f)
+
+// const MAXARG_J = 1<<25 - 1      //33554431
+// const MAXARG_sJ = MAXARG_J >> 1 //16777215

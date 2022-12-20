@@ -17,6 +17,8 @@ func typeOf(val luaValue) Const.LuaType {
 		return Const.LUA_TNUMBER
 	case string:
 		return Const.LUA_TSTRING
+	case *luaTable:
+		return Const.LUA_TTABLE
 	default:
 		panic("todo!")
 	}

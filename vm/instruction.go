@@ -37,9 +37,9 @@ func (i Instruction) Opcode() int {
 }
 
 // BC 是寄存器索引
-func (i Instruction) ABC() (a, b, k, c int) {
+func (i Instruction) ABC() (a, k, b, c int) {
 	a = int(i >> 7 & 0xFF)
-	k = int(i >> 15 & 0x1)
+	k = int(i >> 15 & 0x01)
 	b = int(i >> 16 & 0xFF)
 
 	c = int(i >> 24 & 0xFF)

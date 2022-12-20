@@ -13,7 +13,7 @@ func (L *luaState) AbsIndex(idx int) int {
 }
 
 // [-0, +0, –]
-// http://www.lua.org/manual/5.6/manual.html#lua_checkstack
+// http://www.lua.org/manual/5.4/manual.html#lua_checkstack
 func (L *luaState) CheckStack(n int) bool {
 	L.stack.check(n)
 	return true // never fails

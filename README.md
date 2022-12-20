@@ -1,4 +1,4 @@
-# lua-go
+# lua5.4.4-go
 A complier and VM for lua5.4.4 in GOLANG by Lin-ke.
 
 FOLLOWING @zxh0, writer of book /implement lua by your self

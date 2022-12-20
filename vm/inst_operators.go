@@ -182,18 +182,15 @@ func len(i Instruction, vm LuaVM) {
 	vm.Replace(a)
 }
 
-// R(A) := R(B).. ... ..R(C)
+// R[A] := R[A].. ... ..R[A + B - 1]
 func concat(i Instruction, vm LuaVM) {
-	a, _, b, c := i.ABC()
-	a += 1
-	b += 1
-	c += 1
+	a, _, b, _ := i.ABC()
 
-	n := c - b + 1
-	vm.CheckStack(n)
-	for i := b; i <= c; i++ {
+	a += 1
+	vm.CheckStack(b)
+	for i := a; i <= a+b-1; i++ {
 		vm.PushValue(i)
 	}
-	vm.Concat(n)
+	vm.Concat(b)
 	vm.Replace(a)
 }

@@ -23,12 +23,13 @@ func (L *luaState) GetConst(idx int) {
 }
 
 // 使用常量或者使用寄存器
-func (L *luaState) GetRK(rk int) {
-	if rk > 0xFF { // constant
-		L.GetConst(rk & 0xFF)
-	} else { // register
-		L.PushValue(rk + 1)
+func (L *luaState) GetRK(rk, k int) {
+	if k != 0 {
+		L.GetConst(rk)
+		return
+
 	}
+	L.PushValue(rk + 1)
 }
 
 func (L *luaState) Set(idx int, val interface{}) {

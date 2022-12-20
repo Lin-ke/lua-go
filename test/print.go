@@ -9,6 +9,7 @@ import (
 
 func printStack(ls api.LuaState) {
 	top := ls.GetTop()
+	println("top:", top)
 	for i := 1; i <= top; i++ {
 		t := ls.Type(i)
 
