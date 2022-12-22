@@ -13,4 +13,8 @@ type LuaVM interface {
 	GetRK(rk int, k int)
 	Set(idx int, val interface{})
 	Push(val interface{})
+
+	RegisterCount() int
+	LoadVararg(n int)
+	LoadProto(idx int)
 }
