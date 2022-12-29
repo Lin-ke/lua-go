@@ -1,5 +1,7 @@
 package state
 
+import "fmt"
+
 // secretly added apis for vm implementation
 func (L *luaState) PC() int {
 	return L.stack.pc
@@ -55,10 +57,20 @@ func (L *luaState) RegisterCount() int {
 }
 
 func (L *luaState) LoadVararg(n int) {
-	if n < 0 {
+	if n < 0 { // all out
 		n = len(L.stack.varargs)
 	}
 
 	L.stack.check(n)
 	L.stack.pushN(L.stack.varargs, n)
+}
+func (L *luaState) TailCall(nArgs int) {
+	val := L.stack.get(-(nArgs + 1))
+	if c, ok := val.(*closure); ok {
+		fmt.Printf("tailcall %s<%d,%d>\n", c.proto.Source,
+			c.proto.LineDefined, c.proto.LastLineDefined)
+		L.tailCallLuaClosure(nArgs, c)
+	} else {
+		panic("not function!")
+	}
 }

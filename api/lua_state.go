@@ -4,6 +4,9 @@ type LuaType = int
 type ArithOp = int
 type CompareOp int
 
+// go function protocol
+type GoFunction func(LuaState) int
+
 // idx : 1->top ; -top -> -1
 type LuaState interface {
 	/* basic stack manipulation */
@@ -71,4 +74,5 @@ type LuaState interface {
 	/* 'load' and 'call' functions (load and run Lua code) */
 	Load(chunk []byte, chunkName, mode string) int
 	Call(nArgs, nResults int)
+	TailCall(nArgs int)
 }

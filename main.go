@@ -3,7 +3,7 @@ package main
 import "luago54/test"
 
 func main() {
-	test.Test006()
+	test.Test007()
 }
 
 //old tests :

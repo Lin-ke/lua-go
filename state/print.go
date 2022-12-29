@@ -25,6 +25,11 @@ func printLuaval(val luaValue) {
 		fmt.Printf("[%q]", v)
 	case nil:
 		fmt.Printf("[nil]")
+	case *closure:
+		fmt.Printf("[function]")
+	case *luaTable:
+		fmt.Printf("[table]")
+		printTable(v)
 	default: // other values
 		fmt.Printf("[%s]", v)
 	}

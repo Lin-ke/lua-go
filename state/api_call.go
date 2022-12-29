@@ -6,6 +6,8 @@ import (
 	"luago54/vm"
 )
 
+var DEBUG bool = true
+
 // [-0, +1, –]
 // http://www.lua.org/manual/5.4/manual.html#lua_load
 func (L *luaState) Load(chunk []byte, chunkName, mode string) int {
@@ -54,17 +56,58 @@ func (L *luaState) callLuaClosure(nArgs, nResults int, c *closure) {
 
 	// return results
 	if nResults != 0 {
+		// run will keep the returns on the top.
 		results := newStack.popN(newStack.top - nRegs)
+		if DEBUG {
+			fmt.Printf("return : ")
+			for _, k := range results {
+				printLuaval(k)
+			}
+			println()
+		}
+
 		L.stack.check(len(results))
 		L.stack.pushN(results, nResults)
 	}
+}
+func (L *luaState) tailCallLuaClosure(nArgs int, c *closure) {
+	nRegs := int(c.proto.MaxStackSize)
+	nParams := int(c.proto.NumParams)
+	isVararg := c.proto.IsVararg == 1
+
+	// store args
+	args := L.stack.popN(nArgs)
+	// clean the stack
+	L.SetTop(0)
+	// check if stack space is enough
+	L.stack.check(nRegs + 20)
+	// substitue the closure to new one
+	L.stack.closure = c
+	L.stack.pc = 0
+	// push fixed args
+	L.stack.pushN(args, nParams)
+	L.stack.top = nRegs
+
+	// store varargs
+	if nArgs > nParams && isVararg {
+		L.stack.varargs = args[nParams:]
+	}
+
+	// run closure
+	L.runLuaClosure()
 }
 
 func (L *luaState) runLuaClosure() {
 	for {
 		inst := vm.Instruction(L.Fetch())
 		inst.Execute(L)
-		if inst.Opcode() == vm.OP_RETURN {
+		if DEBUG {
+			fmt.Printf("[%02d] %s ", L.stack.pc+1, inst.OpName())
+			printStack(L.stack)
+			println()
+		}
+
+		if inst.Opcode() == vm.OP_RETURN || inst.Opcode() == vm.OP_TAILCALL {
 			break
 		}
 	}

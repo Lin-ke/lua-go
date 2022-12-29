@@ -121,13 +121,13 @@ func _comparesb(i Instruction, vm LuaVM, op CompareOp, inv bool) {
 	a, k, sb, _ := i.ABC()
 	a += 1
 	vm.PushValue(a)
-	vm.Push(sb)
+	vm.PushInteger(int64(sb))
 	if inv {
 		if vm.Compare(-1, -2, op) != (k != 0) {
 			vm.AddPC(1)
 		}
 	} else {
-		if vm.Compare(-1, -2, op) != (k != 0) {
+		if vm.Compare(-2, -1, op) != (k != 0) {
 			vm.AddPC(1)
 		}
 	}

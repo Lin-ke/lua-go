@@ -5,7 +5,7 @@ import (
 )
 
 func Test001() {
-	ls := state.New(20, nil)
+	ls := state.New()
 
 	ls.PushBoolean(true)
 	printStack(ls)

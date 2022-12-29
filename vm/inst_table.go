@@ -115,20 +115,35 @@ func setField(i Instruction, vm LuaVM) {
 func setList(i Instruction, vm LuaVM) {
 	a, k, b, c := i.ABC()
 	loca := a + 1
-	if b == 0 { /* get up to the top */
-		b = vm.GetTop() - loca
-	} else {
-		// todo (set top)
-	}
+	beqz := b == 0
 	if k != 0 {
 		c += Instruction(vm.Fetch()).Ax() * 1 << 8
 	}
-	// c:last
-	vm.CheckStack(b)
-	for i := 1; i <= b; i++ {
-		vm.PushValue(loca + i)
-		vm.SetI(loca, (int64)(c+i))
+	if beqz { /* get up to the top */
 
+		b = int(vm.ToInteger(-1)) - loca - 1 // not contain a and x.
+		vm.Pop(1)
+		// a -> x
+		idx := c
+		for i := 1; i <= b; i++ {
+			idx++
+			vm.SetI(loca, (int64)(idx))
+
+		}
+		// var -> top
+		for j := vm.RegisterCount() + 1; j <= vm.GetTop(); j++ {
+			vm.PushValue(j)
+			idx++
+			vm.SetI(loca, int64(idx))
+		}
+		vm.SetTop(vm.RegisterCount())
+	} else {
+		vm.CheckStack(1)
+		for i := 1; i <= b; i++ {
+			vm.PushValue(loca + i)
+			vm.SetI(loca, (int64)(c+i))
+
+		}
 	}
-	// after :
+
 }

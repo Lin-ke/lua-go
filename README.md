@@ -16,7 +16,7 @@ FOLLOWING @zxh0, writer of book /implement lua by your self
 
 -> LUA VM(doing)
 
-    complete 58/82 instructions
+    complete 68/82 instructions
     
     
 -> Debugging tools and tests

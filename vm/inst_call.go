@@ -28,22 +28,33 @@ func vararg(i Instruction, vm LuaVM) {
 	a, _, _, c := i.ABC()
 	a += 1
 
-	if c != 1 { // b==0 or b>1
+	if c != 1 { // c==0 or c>1
 		vm.LoadVararg(c - 1)
 		_popResults(a, c, vm)
 	}
 }
 
+// adjust vararg parameters: put func and fixparams to the top of the stack
+func varargPrep(i Instruction, vm LuaVM) {
+	nfixparams, _, _, _ := i.ABC()
+	// seem useless, for we already pushed fixparams.
+	if nfixparams != 0 {
+		// do prep/
+	}
+
+}
+
 // return R(A)(R(A+1), ... ,R(A+B-1))
 func tailCall(i Instruction, vm LuaVM) {
-	a, _, b, _ := i.ABC()
+	a, k, b, _ := i.ABC()
 	a += 1
+	if k != 0 {
+		//  todo:/* close upvalues from current call */
+	}
 
-	// todo: optimize tail call!
-	c := 0
 	nArgs := _pushFuncAndArgs(a, b, vm)
-	vm.Call(nArgs, c-1)
-	_popResults(a, c, vm)
+	vm.TailCall(nArgs)
+	// tailcall will be followed by a return
 }
 
 // R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1))
@@ -67,7 +78,7 @@ func _pushFuncAndArgs(a, b int, vm LuaVM) (nArgs int) {
 	} else { // b== 0
 		// e.g.
 		// f(1,g())
-		//g().c == 0 and f().b == 0
+		//g().c == 0(all out) and f().b == 0(all in)
 		//x  [top]
 		//g() -ret
 		//...
