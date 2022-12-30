@@ -1,9 +1,11 @@
 package vm
 
-import . "luago54/api"
+import (
+	"luago54/api"
+)
 
 // R[A+1] := R[B]; R[A] := R[B][RK(C):string]
-func self(i Instruction, vm LuaVM) {
+func self(i Instruction, vm api.LuaVM) {
 	a, k, b, c := i.ABC()
 	a += 1
 	b += 1
@@ -15,7 +17,7 @@ func self(i Instruction, vm LuaVM) {
 }
 
 // R(A) := closure(KPROTO[Bx])
-func closure(i Instruction, vm LuaVM) {
+func closure(i Instruction, vm api.LuaVM) {
 	a, bx := i.ABx()
 	a += 1
 
@@ -24,7 +26,7 @@ func closure(i Instruction, vm LuaVM) {
 }
 
 // R[A], R[A+1], ..., R[A+C-2] = vararg
-func vararg(i Instruction, vm LuaVM) {
+func vararg(i Instruction, vm api.LuaVM) {
 	a, _, _, c := i.ABC()
 	a += 1
 
@@ -35,7 +37,7 @@ func vararg(i Instruction, vm LuaVM) {
 }
 
 // adjust vararg parameters: put func and fixparams to the top of the stack
-func varargPrep(i Instruction, vm LuaVM) {
+func varargPrep(i Instruction, vm api.LuaVM) {
 	nfixparams, _, _, _ := i.ABC()
 	// seem useless, for we already pushed fixparams.
 	if nfixparams != 0 {
@@ -45,11 +47,11 @@ func varargPrep(i Instruction, vm LuaVM) {
 }
 
 // return R(A)(R(A+1), ... ,R(A+B-1))
-func tailCall(i Instruction, vm LuaVM) {
+func tailCall(i Instruction, vm api.LuaVM) {
 	a, k, b, _ := i.ABC()
 	a += 1
 	if k != 0 {
-		//  todo:/* close upvalues from current call */
+		vm.CloseUpvalues(0)
 	}
 
 	nArgs := _pushFuncAndArgs(a, b, vm)
@@ -58,7 +60,7 @@ func tailCall(i Instruction, vm LuaVM) {
 }
 
 // R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1))
-func call(i Instruction, vm LuaVM) {
+func call(i Instruction, vm api.LuaVM) {
 	a, _, b, c := i.ABC()
 	loca := a + 1
 
@@ -68,7 +70,7 @@ func call(i Instruction, vm LuaVM) {
 	_popResults(loca, c, vm)
 }
 
-func _pushFuncAndArgs(a, b int, vm LuaVM) (nArgs int) {
+func _pushFuncAndArgs(a, b int, vm api.LuaVM) (nArgs int) {
 	if b >= 1 {
 		vm.CheckStack(b)
 		for i := a; i < a+b; i++ {
@@ -90,7 +92,7 @@ func _pushFuncAndArgs(a, b int, vm LuaVM) (nArgs int) {
 	}
 }
 
-func _fixStack(a int, vm LuaVM) {
+func _fixStack(a int, vm api.LuaVM) {
 	x := int(vm.ToInteger(-1)) // reg that params should be sent
 	vm.Pop(1)
 
@@ -101,7 +103,7 @@ func _fixStack(a int, vm LuaVM) {
 	vm.Rotate(vm.RegisterCount()+1, x-a) //keep old stack safe.
 }
 
-func _popResults(a, c int, vm LuaVM) {
+func _popResults(a, c int, vm api.LuaVM) {
 	if c == 1 {
 		// no results
 	} else if c > 1 {
@@ -117,11 +119,11 @@ func _popResults(a, c int, vm LuaVM) {
 }
 
 // return R(A), ... ,R(A+B-2) b-1 returns
-func _return(i Instruction, vm LuaVM) {
+func _return(i Instruction, vm api.LuaVM) {
 	a, k, b, c := i.ABC()
 	a += 1
 	if k != 0 {
-		// todo (upvalue)
+		vm.CloseUpvalues(0)
 	}
 	if c != 0 {
 		// todo (vararg)
@@ -140,12 +142,12 @@ func _return(i Instruction, vm LuaVM) {
 	}
 }
 
-func return0(i Instruction, vm LuaVM) {
+func return0(i Instruction, vm api.LuaVM) {
 	//
 }
 
 // return R[a]
-func return1(i Instruction, vm LuaVM) {
+func return1(i Instruction, vm api.LuaVM) {
 	a, _, _, _ := i.ABC()
 	a += 1
 	vm.PushValue(a)

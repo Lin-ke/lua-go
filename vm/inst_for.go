@@ -1,7 +1,7 @@
 ﻿package vm
 
 import (
-	. "luago54/api"
+	"luago54/api"
 	"math"
 )
 
@@ -41,28 +41,28 @@ func _toNumberType(a interface{}) (int64, float64, bool) {
  */
 // panic will replaced by print errors
 // prior to Number ,if step/init is string.
-func forPrep(i Instruction, vm LuaVM) {
+func forPrep(i Instruction, vm api.LuaVM) {
 	a, Bx := i.ABx()
 	a += 1
 	if _forPrep(a, vm) {
 		vm.AddPC(Bx + 1)
 	}
 }
-func _forPrep(a int, vm LuaVM) bool {
+func _forPrep(a int, vm api.LuaVM) bool {
 
 	// type of init and step
 
-	if vm.Type(a) == LUA_TSTRING {
+	if vm.Type(a) == api.LUA_TSTRING {
 		vm.PushNumber(vm.ToNumber(a))
 		vm.Replace(a)
 
 	}
-	if vm.Type(a+1) == LUA_TSTRING {
+	if vm.Type(a+1) == api.LUA_TSTRING {
 		vm.PushNumber(vm.ToNumber(a + 1))
 		vm.Replace(a + 1)
 
 	}
-	if vm.Type(a+2) == LUA_TSTRING {
+	if vm.Type(a+2) == api.LUA_TSTRING {
 		vm.PushNumber(vm.ToNumber(a + 2))
 		vm.Replace(a + 2)
 
@@ -137,7 +137,7 @@ func forilimit(istep, iinit int64, limit interface{}) (bool, int64) {
 	}
 }
 
-func forLoop(i Instruction, vm LuaVM) {
+func forLoop(i Instruction, vm api.LuaVM) {
 	a, Bx := i.ABx()
 	a += 1
 	if vm.IsInteger(a + 2) { // int loop
@@ -146,12 +146,12 @@ func forLoop(i Instruction, vm LuaVM) {
 			//count = count - 1
 			vm.PushValue(a + 1)
 			vm.PushInteger(1)
-			vm.Arith(LUA_OPSUB)
+			vm.Arith(api.LUA_OPSUB)
 			vm.Replace(a + 1)
 			// i = i + step
 			vm.PushValue(a)
 			vm.PushValue(a + 2)
-			vm.Arith(LUA_OPADD)
+			vm.Arith(api.LUA_OPADD)
 			vm.Replace(a)
 			vm.Copy(a, a+3) //i
 			vm.AddPC(-Bx)
@@ -166,7 +166,7 @@ func forLoop(i Instruction, vm LuaVM) {
 }
 
 // inf will carry out forever and nan will carry out once.
-func _floatforloop(a int, vm LuaVM) bool {
+func _floatforloop(a int, vm api.LuaVM) bool {
 	step := vm.ToNumber(a + 2)
 	limit := vm.ToNumber(a + 1)
 	idx := vm.ToNumber(a)

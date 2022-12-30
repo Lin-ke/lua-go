@@ -41,12 +41,17 @@ type LuaState interface {
 	ToNumberX(idx int) (float64, bool)
 	ToString(idx int) string
 	ToStringX(idx int) (string, bool)
+	IsGoFunction(idx int) bool
+	ToGoFunction(idx int) GoFunction
 	/* push functions (Go -> stack) */
 	PushNil()
 	PushBoolean(b bool)
 	PushInteger(n int64)
 	PushNumber(n float64)
 	PushString(s string)
+	PushGoFunction(f GoFunction)
+	PushGoClosure(f GoFunction, n int)
+	PushGlobalTable()
 	// /* get functions */
 	NewTable()
 	CreateTable(nArr, nRec int)
@@ -56,11 +61,13 @@ type LuaState interface {
 	// RawGet(idx int) LuaType
 	// RawGetI(idx int, i int64) LuaType
 	// GetMetatable(idx int) bool
-	// GetGlobal(name string) LuaType
+	GetGlobal(name string) LuaType
 	// /* set functions */
 	SetTable(idx int)
 	SetField(idx int, k string)
 	SetI(idx int, i int64)
+	SetGlobal(name string)
+	Register(name string, f GoFunction)
 	// RawSet(idx int)
 	// RawSetI(idx int, i int64)
 	// SetMetatable(idx int)
@@ -75,4 +82,8 @@ type LuaState interface {
 	Load(chunk []byte, chunkName, mode string) int
 	Call(nArgs, nResults int)
 	TailCall(nArgs int)
+}
+
+func LuaUpvalueIndex(i int) int {
+	return LUA_REGISTRYINDEX - i
 }

@@ -1,5 +1,7 @@
 package state
 
+import "luago54/api"
+
 // [-0, +1, m]
 // http://www.lua.org/manual/5.4/manual.html#lua_newtable
 func (L *luaState) NewTable() {
@@ -15,7 +17,7 @@ func (L *luaState) CreateTable(nArr, nRec int) {
 
 // [-1, +1, e]
 // http://www.lua.org/manual/5.4/manual.html#lua_gettable
-func (L *luaState) GetTable(idx int) LuaType {
+func (L *luaState) GetTable(idx int) api.LuaType {
 	t := L.stack.get(idx)
 	k := L.stack.pop()
 	return L.getTable(t, k)
@@ -23,20 +25,27 @@ func (L *luaState) GetTable(idx int) LuaType {
 
 // [-0, +1, e] field is hashkey, I is index
 // http://www.lua.org/manual/5.4/manual.html#lua_getfield
-func (L *luaState) GetField(idx int, k string) LuaType {
+func (L *luaState) GetField(idx int, k string) api.LuaType {
 	t := L.stack.get(idx)
 	return L.getTable(t, k)
 }
 
 // [-0, +1, e]
 // http://www.lua.org/manual/5.4/manual.html#lua_geti
-func (L *luaState) GetI(idx int, i int64) LuaType {
+func (L *luaState) GetI(idx int, i int64) api.LuaType {
 	t := L.stack.get(idx)
 	return L.getTable(t, i)
 }
 
+// [-0, +1, e]
+// http://www.lua.org/manual/5.4/manual.html#lua_getglobal
+func (L *luaState) GetGlobal(name string) api.LuaType {
+	t := L.registry.get(api.LUA_RIDX_GLOBALS)
+	return L.getTable(t, name)
+}
+
 // push(t[k])
-func (L *luaState) getTable(t, k luaValue) LuaType {
+func (L *luaState) getTable(t, k luaValue) api.LuaType {
 	if tbl, ok := t.(*luaTable); ok {
 		v := tbl.get(k)
 		L.stack.push(v)

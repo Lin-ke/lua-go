@@ -1,9 +1,12 @@
 package main
 
-import "luago54/test"
+import (
+	"luago54/test"
+)
 
 func main() {
 	test.Test007()
+
 }
 
 //old tests :

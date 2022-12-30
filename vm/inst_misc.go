@@ -1,11 +1,11 @@
 package vm
 
 import (
-	. "luago54/api"
+	"luago54/api"
 )
 
 // R(A) := R(B)
-func move(i Instruction, vm LuaVM) {
+func move(i Instruction, vm api.LuaVM) {
 	a, _, b, _ := i.ABC()
 	// reg_index + 1 = stack_index.
 	a += 1
@@ -15,7 +15,7 @@ func move(i Instruction, vm LuaVM) {
 }
 
 // pc+=sBx
-func jmp(i Instruction, vm LuaVM) {
+func jmp(i Instruction, vm api.LuaVM) {
 	sj := i.SJ()
 
 	vm.AddPC(sj)

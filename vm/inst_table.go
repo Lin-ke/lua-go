@@ -1,12 +1,11 @@
 package vm
 
 import (
-	"fmt"
-	. "luago54/api"
+	"luago54/api"
 )
 
 // R(A) := {}
-func newTable(i Instruction, vm LuaVM) {
+func newTable(i Instruction, vm api.LuaVM) {
 	a, k, b, c := i.ABC()
 	// b:log2(hash size) + 1
 	// c:arraysize
@@ -28,7 +27,7 @@ func newTable(i Instruction, vm LuaVM) {
 }
 
 // R[A] := R[B][C]
-func getI(i Instruction, vm LuaVM) {
+func getI(i Instruction, vm api.LuaVM) {
 	a, _, b, c := i.ABC()
 	a += 1
 	b += 1
@@ -38,7 +37,7 @@ func getI(i Instruction, vm LuaVM) {
 }
 
 // R[A] := R[B][K[C]:string]
-func getField(i Instruction, vm LuaVM) {
+func getField(i Instruction, vm api.LuaVM) {
 	a, _, b, c := i.ABC()
 	a += 1
 	b += 1
@@ -51,7 +50,7 @@ func getField(i Instruction, vm LuaVM) {
 }
 
 // R(A) := R[B][R[C]]
-func getTable(i Instruction, vm LuaVM) {
+func getTable(i Instruction, vm api.LuaVM) {
 	a, _, b, c := i.ABC()
 	a += 1
 	b += 1
@@ -62,7 +61,7 @@ func getTable(i Instruction, vm LuaVM) {
 }
 
 // R(A)[R(B)] := RK(C)
-func setTable(i Instruction, vm LuaVM) {
+func setTable(i Instruction, vm api.LuaVM) {
 	a, k, b, c := i.ABC()
 	a += 1
 	b += 1
@@ -73,33 +72,16 @@ func setTable(i Instruction, vm LuaVM) {
 }
 
 // R[A][B] := RK(C)
-func setI(i Instruction, vm LuaVM) {
+func setI(i Instruction, vm api.LuaVM) {
 	a, k, b, c := i.ABC()
 	a += 1
 
 	vm.GetRK(c, k)
 	vm.SetI(a, int64(b))
 }
-func printLuaval(val interface{}) {
-
-	switch v := val.(type) {
-	case bool:
-		fmt.Printf("[%t]", v)
-	case int64:
-		fmt.Printf("[%d]", v)
-	case float64:
-		fmt.Printf("[%f]", v)
-	case string:
-		fmt.Printf("[%q]", v)
-	case nil:
-		fmt.Printf("[nil]")
-	default: // other values
-		fmt.Printf("[%s]", v)
-	}
-}
 
 // R[A][K[B]:string] := RK(C)
-func setField(i Instruction, vm LuaVM) {
+func setField(i Instruction, vm api.LuaVM) {
 
 	a, k, b, c := i.ABC()
 	a += 1
@@ -112,7 +94,7 @@ func setField(i Instruction, vm LuaVM) {
 }
 
 // R[A][C+i] := R[A+i], 1 <= i <= B
-func setList(i Instruction, vm LuaVM) {
+func setList(i Instruction, vm api.LuaVM) {
 	a, k, b, c := i.ABC()
 	loca := a + 1
 	beqz := b == 0

@@ -1,6 +1,8 @@
 package state
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // secretly added apis for vm implementation
 func (L *luaState) PC() int {
@@ -47,9 +49,28 @@ func (L *luaState) Get(idx int) interface{} {
 }
 
 func (L *luaState) LoadProto(idx int) {
-	proto := L.stack.closure.proto.Protos[idx]
-	closure := newLuaClosure(proto)
-	L.stack.push(closure)
+	stack := L.stack
+	subProto := stack.closure.proto.Protos[idx]
+	closure := newLuaClosure(subProto)
+	stack.push(closure)
+
+	for i, uvInfo := range subProto.Upvalues {
+		uvIdx := int(uvInfo.Idx)
+		if uvInfo.Instack == 1 { // open upvalue
+			if stack.openuvs == nil {
+				stack.openuvs = map[int]*upvalue{}
+			}
+
+			if openuv, found := stack.openuvs[uvIdx]; found {
+				closure.upvals[i] = openuv
+			} else {
+				closure.upvals[i] = &upvalue{&stack.slots[uvIdx]}
+				stack.openuvs[uvIdx] = closure.upvals[i]
+			}
+		} else { // closed upvalue
+			closure.upvals[i] = stack.closure.upvals[uvIdx]
+		}
+	}
 }
 
 func (L *luaState) RegisterCount() int {
@@ -72,5 +93,21 @@ func (L *luaState) TailCall(nArgs int) {
 		L.tailCallLuaClosure(nArgs, c)
 	} else {
 		panic("not function!")
+	}
+}
+
+func (L *luaState) CloseUpvalues(a int) {
+	for i, openuv := range L.stack.openuvs {
+		if i >= a-1 {
+			val := *openuv.val
+			openuv.val = &val
+			delete(L.stack.openuvs, i)
+			if DEBUG.printUpval {
+				fmt.Printf("closeupval:[%d]", i)
+				printLuaval(val)
+				fmt.Println()
+			}
+		}
+
 	}
 }

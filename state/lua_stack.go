@@ -1,8 +1,9 @@
 package state
 
-import "fmt"
-
-var printstack bool = false
+import (
+	"fmt"
+	"luago54/api"
+)
 
 // stack contains pc and prototype.
 type luaStack struct {
@@ -10,17 +11,20 @@ type luaStack struct {
 	slots []luaValue
 	top   int
 	/* call info */
+	state   *luaState // registry table
 	closure *closure
 	varargs []luaValue
 	pc      int
+	openuvs map[int]*upvalue //upvalues are still
 	/* linked list */
 	prev *luaStack
 }
 
-func newLuaStack(size int) *luaStack {
+func newLuaStack(size int, state *luaState) *luaStack {
 	return &luaStack{
 		slots: make([]luaValue, size),
 		top:   0,
+		state: state,
 	}
 }
 
@@ -54,21 +58,39 @@ func (stack *luaStack) pop() luaValue {
 }
 
 // idx -stack.top => -1 => 1 => stack.top
-// 到后面会完善
 
 func (stack *luaStack) absIndex(idx int) int {
-	if idx >= 0 {
+	if idx >= 0 || idx <= api.LUA_REGISTRYINDEX {
 		return idx
 	}
 	return idx + stack.top + 1
 }
 
 func (stack *luaStack) isValid(idx int) bool {
+	if idx < api.LUA_REGISTRYINDEX { /* upvalues */
+		uvIdx := api.LUA_REGISTRYINDEX - idx - 1
+		c := stack.closure
+		return c != nil && uvIdx < len(c.upvals)
+	}
+	if idx == api.LUA_REGISTRYINDEX {
+		return true
+	}
 	absIdx := stack.absIndex(idx)
 	return absIdx > 0 && absIdx <= stack.top
 }
 
 func (stack *luaStack) get(idx int) luaValue {
+	if idx < api.LUA_REGISTRYINDEX { /* upvalues */
+		uvIdx := api.LUA_REGISTRYINDEX - idx - 1
+		c := stack.closure
+		if c == nil || uvIdx >= len(c.upvals) {
+			return nil
+		}
+		return *(c.upvals[uvIdx].val)
+	}
+	if idx == api.LUA_REGISTRYINDEX {
+		return stack.state.registry
+	}
 	absIdx := stack.absIndex(idx)
 	if absIdx > 0 && absIdx <= stack.top {
 		return stack.slots[absIdx-1]
@@ -84,13 +106,24 @@ func (stack *luaStack) tget(idx int) luaValue {
 }
 
 func (stack *luaStack) set(idx int, val luaValue) {
+	if idx < api.LUA_REGISTRYINDEX { /* upvalues */
+		uvIdx := api.LUA_REGISTRYINDEX - idx - 1
+		c := stack.closure
+		if c != nil && uvIdx < len(c.upvals) {
+			*(c.upvals[uvIdx].val) = val
+		}
+		return
+	}
+
+	if idx == api.LUA_REGISTRYINDEX {
+		stack.state.registry = val.(*luaTable)
+		return
+	}
 	absIdx := stack.absIndex(idx)
 	if absIdx > 0 && absIdx <= stack.top {
 		stack.slots[absIdx-1] = val // 设定开始是1的问题
-		//debug
-		if printstack {
+		if DEBUG.printSetSlot {
 			fmt.Printf("Set slot %d\n", absIdx)
-			printStack(stack)
 		}
 
 		return

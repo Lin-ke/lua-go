@@ -101,7 +101,6 @@ func (i Instruction) Execute(vm api.LuaVM) {
 	action := opcodes[i.Opcode()].action
 	if action != nil {
 		action(i, vm)
-	} else if i.OpName() == "VARARGPREP" {
 	} else {
 		panic(i.OpName())
 	}

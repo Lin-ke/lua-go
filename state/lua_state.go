@@ -1,16 +1,19 @@
 package state
 
+import "luago54/api"
+
 type luaState struct {
-	stack *luaStack // current call stack.
+	registry *luaTable
+	stack    *luaStack // current call stack.
 }
-type LuaType = int
-type ArithOp = int
-type CompareOp int
 
 func New() *luaState {
-	return &luaState{
-		stack: newLuaStack(20),
-	}
+	registry := newLuaTable(0, 0)
+	registry.put(api.LUA_RIDX_GLOBALS, newLuaTable(0, 0)) // global table
+
+	ls := &luaState{registry: registry}
+	ls.pushLuaStack(newLuaStack(api.LUA_MINSTACK, ls))
+	return ls
 }
 
 // state works as  a callstack.
