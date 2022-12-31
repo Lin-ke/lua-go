@@ -38,6 +38,10 @@ func bandk(i Instruction, vm api.LuaVM) { _binaryKArith(i, vm, api.LUA_OPBAND) }
 func bork(i Instruction, vm api.LuaVM)  { _binaryKArith(i, vm, api.LUA_OPBOR) }
 func bxork(i Instruction, vm api.LuaVM) { _binaryKArith(i, vm, api.LUA_OPBXOR) }
 
+func mmbin(i Instruction, vm api.LuaVM)  { _binaryKArith(i, vm, api.LUA_OPBXOR) }
+func mmbini(i Instruction, vm api.LuaVM) { _binaryKArith(i, vm, api.LUA_OPBXOR) }
+func mmbink(i Instruction, vm api.LuaVM) { _binaryKArith(i, vm, api.LUA_OPBXOR) }
+
 // R(A) := R[B] op R[C]
 func _binaryArith(i Instruction, vm api.LuaVM, op api.ArithOp) {
 	a, _, b, c := i.ABC()
@@ -56,7 +60,7 @@ func _binaryscArith(i Instruction, vm api.LuaVM, op api.ArithOp) {
 	a += 1
 	b += 1
 	vm.PushValue(b)
-	vm.Push(c)
+	vm.PushInteger((int64(c)))
 	vm.Arith(op)
 	vm.Replace(a)
 }

@@ -24,7 +24,7 @@ func (L *luaState) Load(chunk []byte, chunkName, mode string) int {
 // http://www.lua.org/manual/5.4/manual.html#lua_call
 // rely on __call metamethod.
 func (L *luaState) Call(nArgs, nResults int) {
-	val := L.stack.get(-(nArgs + 1))
+	val := L.stack.get(-(nArgs + 1)) // the function
 	if c, ok := val.(*closure); ok {
 		if c.proto != nil {
 			if DEBUG.printCall {
@@ -37,7 +37,28 @@ func (L *luaState) Call(nArgs, nResults int) {
 		}
 
 	} else {
-		panic("not function!")
+		if mf := getMetafield(val, "__call", L); mf != nil {
+			if c, ok := mf.(*closure); ok { // metamethod __call is a closure
+				L.stack.push(val)
+				L.Insert(-(nArgs + 2))
+				nArgs += 1
+				if c.proto != nil {
+					if DEBUG.printCall {
+						fmt.Printf("meta:__call %s<%d,%d>\n", c.proto.Source,
+							c.proto.LineDefined, c.proto.LastLineDefined)
+					}
+					L.callGoClosure(nArgs, nResults, c)
+
+				} else {
+					L.callGoClosure(nArgs, nResults, c)
+				}
+
+			} else {
+				panic("__call is not a closure")
+			}
+
+		}
+		panic("no metamethod __call")
 	}
 }
 
@@ -111,7 +132,7 @@ func (L *luaState) runLuaClosure() {
 		inst := vm.Instruction(L.Fetch())
 		inst.Execute(L)
 		if DEBUG.printInst {
-			fmt.Printf("[%02d] %s ", L.stack.pc+1, inst.OpName())
+			fmt.Printf("[%02d] %s ", L.stack.pc, inst.OpName())
 
 		}
 		if DEBUG.printStack {

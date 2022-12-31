@@ -32,3 +32,4 @@ func (L *luaState) popLuaStack() {
 	L.stack = stack.prev
 	stack.prev = nil
 }
+

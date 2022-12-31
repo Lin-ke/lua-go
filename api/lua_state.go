@@ -58,9 +58,9 @@ type LuaState interface {
 	GetTable(idx int) LuaType
 	GetField(idx int, k string) LuaType
 	GetI(idx int, i int64) LuaType
-	// RawGet(idx int) LuaType
-	// RawGetI(idx int, i int64) LuaType
-	// GetMetatable(idx int) bool
+	RawGet(idx int) LuaType
+	RawGetI(idx int, i int64) LuaType
+	GetMetatable(idx int) bool
 	GetGlobal(name string) LuaType
 	// /* set functions */
 	SetTable(idx int)
@@ -68,15 +68,17 @@ type LuaState interface {
 	SetI(idx int, i int64)
 	SetGlobal(name string)
 	Register(name string, f GoFunction)
-	// RawSet(idx int)
-	// RawSetI(idx int, i int64)
-	// SetMetatable(idx int)
-	// SetGlobal(name string)
+	RawSet(idx int)
+	RawSetI(idx int, i int64)
+	SetMetatable(idx int)
 	/* Comparison and arithmetic functions */
 	Arith(op ArithOp)
-	Compare(idx1, idx2 int, op CompareOp) bool // 两个索引
+	Compare(idx1, idx2 int, op CompareOp) bool
+	RawEqual(idx1, idx2 int) bool
+
 	/* miscellaneous functions */
 	Len(idx int)
+	RawLen(idx int) int
 	Concat(n int)
 	/* 'load' and 'call' functions (load and run Lua code) */
 	Load(chunk []byte, chunkName, mode string) int

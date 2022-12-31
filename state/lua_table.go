@@ -7,10 +7,15 @@ import (
 
 // lobject.h #724 : hashtable + array
 type luaTable struct {
-	arr  []luaValue
-	_map map[luaValue]luaValue
+	metatable *luaTable
+	arr       []luaValue
+	_map      map[luaValue]luaValue
 }
 
+func (tbl *luaTable) hasMetafield(fieldName string) bool {
+	return tbl.metatable != nil &&
+		tbl.metatable.get(fieldName) != nil
+}
 func newLuaTable(nArr, nRec int) *luaTable {
 	t := &luaTable{}
 	if nArr > 0 {

@@ -11,8 +11,25 @@ func (L *luaState) Len(idx int) {
 	} else if t, ok := val.(*luaTable); ok {
 		L.stack.push((int64)(t.len()))
 
+	} else if result, ok := callMetamethod(val, val, "__len", L); ok {
+
+		L.stack.push(result)
 	} else {
 		panic("length error!")
+	}
+}
+
+// [-0,+0,-]
+// http://www.lua.org/manual/5.4/manual.html#lua_rawlen
+func (L *luaState) RawLen(idx int) int {
+	val := L.stack.get(idx)
+	if s, ok := val.(string); ok {
+		return len(s)
+	} else if t, ok := val.(*luaTable); ok {
+		return t.len()
+
+	} else {
+		panic("lenth error")
 	}
 }
 
@@ -23,20 +40,22 @@ func (L *luaState) Concat(n int) {
 	if n == 0 {
 		L.stack.push("")
 	} else if n >= 2 {
-		s0 := L.ToString(-1)
-		L.stack.pop()
 
 		for i := 1; i < n; i++ {
-			if L.IsString(-1) {
-				next := L.ToString(-1)
-				L.stack.pop()
-				s0 = next + s0
+			sb, okb := L.ToStringX(-1)
+			sa, oka := L.ToStringX(-2)
+			b := L.stack.pop()
+			a := L.stack.pop()
+			if okb && oka {
+				L.stack.push(sa + sb)
+				continue
+			} else if result, ok := callMetamethod(a, b, "__concat", L); ok {
+				L.stack.push(result)
 				continue
 			}
-			L.stack.push(s0)
+
 			panic("concatenation error!")
 		}
-		L.stack.push(s0)
 	}
 	// n == 1, do nothing
 }
