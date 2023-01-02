@@ -22,7 +22,7 @@ func setUpval(i Instruction, vm api.LuaVM) {
 	vm.Copy(a, api.LuaUpvalueIndex(b))
 }
 
-// R(A) := UpValue[B][RK(C)]
+// R[A] := UpValue[B][K[C]:string]
 func getTabUp(i Instruction, vm api.LuaVM) {
 	a, _, b, c := i.ABC()
 	a += 1

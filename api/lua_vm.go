@@ -8,6 +8,7 @@ type LuaVM interface {
 	AddPC(n int)
 	Fetch() uint32
 	GetConst(idx int)
+	LastInst() uint32
 
 	Get(idx int) interface{}
 	GetRK(rk int, k int)
@@ -19,4 +20,7 @@ type LuaVM interface {
 	LoadProto(idx int)
 
 	CloseUpvalues(a int)
+
+	RawArith(op ArithOp) bool // 执行成功
+	CallMetaMethod(mmName string)
 }

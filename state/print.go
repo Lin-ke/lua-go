@@ -7,12 +7,12 @@ import (
 
 type DebugInfo struct {
 	printUpval, printStack, printTable, printInst, printInstDetail bool
-	printSetSlot, printReturn, printCall                           bool
+	printSetSlot, printReturn, printCall, printFunc                bool
 }
 
 var DEBUG DebugInfo = DebugInfo{
-	true, true, true, true, false,
-	true, true, true,
+	true, true, false, true, false,
+	true, true, true, true,
 }
 
 func printStack(L *luaStack) {
@@ -37,7 +37,13 @@ func printLuaval(val luaValue) {
 	case nil:
 		fmt.Printf("[nil]")
 	case *closure:
-		fmt.Printf("[function]")
+		fmt.Printf("[function")
+		if DEBUG.printFunc {
+			if v.proto != nil {
+				fmt.Printf("<%d,%d>", v.proto.LineDefined, v.proto.LastLineDefined)
+			}
+		}
+		fmt.Printf("]")
 	case *luaTable:
 		fmt.Printf("[table]")
 		if DEBUG.printTable {
@@ -50,6 +56,9 @@ func printLuaval(val luaValue) {
 }
 
 func printTable(Table *luaTable) {
+	if Table.metatable != nil {
+		fmt.Print("[metatable]")
+	}
 	fmt.Printf("\narray:%d\n", Table.len())
 	for _, itr := range Table.arr {
 		printLuaval(itr)
@@ -58,10 +67,11 @@ func printTable(Table *luaTable) {
 	fmt.Printf("map:%d\n", len(Table._map))
 	for k, v := range Table._map {
 		printLuaval(k)
-		print(":")
+		fmt.Printf(":")
 		printLuaval(v)
-		print("|")
+		fmt.Printf(" | ")
 	}
+	fmt.Println()
 	fmt.Println()
 }
 func printInst(i vm.Instruction) {

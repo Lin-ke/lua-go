@@ -9,7 +9,6 @@ func self(i Instruction, vm api.LuaVM) {
 	a, k, b, c := i.ABC()
 	a += 1
 	b += 1
-
 	vm.Copy(b, a+1)
 	vm.GetRK(c, k)
 	vm.GetTable(b)
@@ -56,15 +55,30 @@ func tailCall(i Instruction, vm api.LuaVM) {
 
 	nArgs := _pushFuncAndArgs(a, b, vm)
 	vm.TailCall(nArgs)
-	// tailcall will be followed by a return
+	// tailcall  will be followed by a return
 }
+
+// return R(A)(R(A+1), ... ,R(A+B-1))
+// func tailCall(i Instruction, vm api.LuaVM) {
+// 	a, k, b, _ := i.ABC()
+// 	a += 1
+// 	if k != 0 {
+// 		vm.CloseUpvalues(0)
+// 	}
+// 	// todo: optimize tail call!
+// 	c := 0
+// 	nArgs := _pushFuncAndArgs(a, b, vm)
+// 	vm.Call(nArgs, c-1)
+//  //must be all out
+// 	_popResults(a, c, vm)
+// }
 
 // R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1))
 func call(i Instruction, vm api.LuaVM) {
 	a, _, b, c := i.ABC()
 	loca := a + 1
 
-	// println(":::"+ vm.StackToString())
+	// fmt.Println(":::"+ vm.StackToString())
 	nArgs := _pushFuncAndArgs(loca, b, vm)
 	vm.Call(nArgs, c-1)
 	_popResults(loca, c, vm)
@@ -80,9 +94,9 @@ func _pushFuncAndArgs(a, b int, vm api.LuaVM) (nArgs int) {
 	} else { // b== 0
 		// e.g.
 		// f(1,g())
-		//g().c == 0(all out) and f().b == 0(all in)
+		//g'return.c == 0(all out) and f'call.b == 0(all in)
 		//x  [top]
-		//g() -ret
+		//g() -return
 		//...
 		//g (put g()'s return here) [x]
 		//1
@@ -100,7 +114,7 @@ func _fixStack(a int, vm api.LuaVM) {
 	for i := a; i < x; i++ {
 		vm.PushValue(i)
 	}
-	vm.Rotate(vm.RegisterCount()+1, x-a) //keep old stack safe.
+	vm.Rotate(vm.RegisterCount()+1, x-a)
 }
 
 func _popResults(a, c int, vm api.LuaVM) {
@@ -150,6 +164,7 @@ func return0(i Instruction, vm api.LuaVM) {
 func return1(i Instruction, vm api.LuaVM) {
 	a, _, _, _ := i.ABC()
 	a += 1
+	vm.CheckStack(1)
 	vm.PushValue(a)
-	//back to poscall
+	//back to pos
 }

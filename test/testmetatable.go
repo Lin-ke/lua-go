@@ -40,15 +40,22 @@ func setMetatable(ls api.LuaState) int {
 
 func print(ls api.LuaState) int {
 	nArgs := ls.GetTop()
+
 	for i := 1; i <= nArgs; i++ {
 		if ls.IsBoolean(i) {
+			fmt.Print("123")
 			fmt.Printf("%t", ls.ToBoolean(i))
 		} else if ls.IsString(i) {
+			fmt.Print("123")
 			fmt.Print(ls.ToString(i))
 		} else {
+			fmt.Print("123")
+			fmt.Println()
 			fmt.Print(ls.TypeName(ls.Type(i)))
+			fmt.Println()
 		}
 		if i < nArgs {
+			fmt.Print("123")
 			fmt.Print("\t")
 		}
 	}

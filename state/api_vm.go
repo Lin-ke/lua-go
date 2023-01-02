@@ -2,6 +2,7 @@ package state
 
 import (
 	"fmt"
+	"luago54/api"
 )
 
 // secretly added apis for vm implementation
@@ -18,6 +19,14 @@ func (L *luaState) Fetch() uint32 {
 	i := L.stack.closure.proto.Code[L.stack.pc]
 	L.stack.pc++
 	return i
+}
+
+func (L *luaState) LastInst() uint32 {
+	if L.stack.pc == 0 {
+		panic("no lastInst")
+	}
+
+	return L.stack.closure.proto.Code[L.stack.pc-1]
 }
 
 // get const from proto according to index
@@ -85,16 +94,8 @@ func (L *luaState) LoadVararg(n int) {
 	L.stack.check(n)
 	L.stack.pushN(L.stack.varargs, n)
 }
-func (L *luaState) TailCall(nArgs int) {
-	val := L.stack.get(-(nArgs + 1))
-	if c, ok := val.(*closure); ok {
-		fmt.Printf("tailcall %s<%d,%d>\n", c.proto.Source,
-			c.proto.LineDefined, c.proto.LastLineDefined)
-		L.tailCallLuaClosure(nArgs, c)
-	} else {
-		panic("not function!")
-	}
-}
+
+// tailcall in api_call.go
 
 func (L *luaState) CloseUpvalues(a int) {
 	for i, openuv := range L.stack.openuvs {
@@ -110,4 +111,62 @@ func (L *luaState) CloseUpvalues(a int) {
 		}
 
 	}
+}
+
+func (L *luaState) CallMetaMethod(mmName string) {
+	var mm luaValue
+	a := L.Get(-2)
+	b := L.Get(-1)
+	if mm = getMetafield(a, mmName, L); mm == nil {
+		if mm = getMetafield(b, mmName, L); mm == nil {
+			return // call failed.
+		}
+	}
+	L.stack.check(2)
+	L.Push(mm)
+	L.Insert(-3)
+	L.Call(2, 1)
+
+}
+
+func (L *luaState) RawArith(op api.ArithOp) bool {
+	var a, b luaValue // operands
+	b = L.stack.pop()
+	if op != api.LUA_OPUNM && op != api.LUA_OPBNOT {
+		a = L.stack.pop()
+	} else {
+		a = b
+	}
+	// pop, then push result.
+	operator := operators[op]
+	if result := _rawarith(a, b, operator); result != nil {
+		L.stack.push(result)
+	} else {
+		// result == nil
+		return false
+	}
+	return true
+}
+func _rawarith(a, b luaValue, op operator) luaValue {
+	if op.floatFunc == nil { // bitwise
+		if x, ok := convertToInteger(a); ok {
+			if y, ok := convertToInteger(b); ok {
+				return op.integerFunc(x, y)
+			}
+		}
+	} else { // arith
+		if op.integerFunc != nil { // add,sub,mul,mod,idiv,unm
+			if x, ok := a.(int64); ok {
+				if y, ok := b.(int64); ok {
+					return op.integerFunc(x, y)
+				}
+			}
+		}
+		if x, ok := convertToFloat(a); ok {
+			if y, ok := convertToFloat(b); ok {
+				return op.floatFunc(x, y)
+			}
+		}
+	}
+	return nil
 }

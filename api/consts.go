@@ -43,31 +43,30 @@ const (
 	LUA_OPLE
 )
 
-const (
-	LUA_TMINDEX = iota
-	LUA_TMNEWINDEX
-	LUA_TMGC
-	LUA_TMMODE
-	LUA_TMLEN
-	LUA_TMEQ /* last tag method with fast access */
-	LUA_TMADD
-	LUA_TMSUB
-	LUA_TMMUL
-	LUA_TMMOD
-	LUA_TMPOW
-	LUA_TMDIV
-	LUA_TMIDIV
-	LUA_TMBAND
-	LUA_TMBOR
-	LUA_TMBXOR
-	LUA_TMSHL
-	LUA_TMSHR
-	LUA_TMUNM
-	LUA_TMBNOT
-	LUA_TMLT
-	LUA_TMLE
-	LUA_TMCONCAT
-	LUA_TMCALL
-	LUA_TMCLOSE
-	LUA_TMN /* number of elements in the enum */
-)
+var METAMETHOD = []string{
+	"__index",
+	"__newindex",
+	"__gc",
+	"__mode",
+	"__len",
+	"__eq",
+	"__add",
+	"__sub",
+	"__mul",
+	"__mod",
+	"__pow",
+	"__div",
+	"__idiv",
+	"__band",
+	"__bor",
+	"__bxor",
+	"__shl",
+	"__shr",
+	"__unm",
+	"__bnot",
+	"__lt",
+	"__le",
+	"__concat",
+	"__call",
+	"__close",
+}

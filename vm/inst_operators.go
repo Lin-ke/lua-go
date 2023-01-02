@@ -38,9 +38,50 @@ func bandk(i Instruction, vm api.LuaVM) { _binaryKArith(i, vm, api.LUA_OPBAND) }
 func bork(i Instruction, vm api.LuaVM)  { _binaryKArith(i, vm, api.LUA_OPBOR) }
 func bxork(i Instruction, vm api.LuaVM) { _binaryKArith(i, vm, api.LUA_OPBXOR) }
 
-func mmbin(i Instruction, vm api.LuaVM)  { _binaryKArith(i, vm, api.LUA_OPBXOR) }
-func mmbini(i Instruction, vm api.LuaVM) { _binaryKArith(i, vm, api.LUA_OPBXOR) }
-func mmbink(i Instruction, vm api.LuaVM) { _binaryKArith(i, vm, api.LUA_OPBXOR) }
+func mmbin(i Instruction, vm api.LuaVM) {
+	a, _, b, c := i.ABC()
+	a += 1
+	b += 1
+	vm.PushValue(a)
+	vm.PushValue(b)
+	vm.CallMetaMethod(api.METAMETHOD[c])
+	a, _, _, _ = Instruction(vm.LastInst()).ABC()
+	a += 1
+	vm.Replace(a)
+}
+func mmbini(i Instruction, vm api.LuaVM) {
+	a, k, b, c := i.ABC()
+	a += 1
+	if k != 0 {
+		vm.PushInteger((int64(b)))
+		vm.PushValue(a)
+	} else {
+		vm.PushValue(a)
+		vm.PushInteger((int64(b)))
+	}
+
+	vm.CallMetaMethod(api.METAMETHOD[c])
+	a, _, _, _ = Instruction(vm.LastInst()).ABC()
+	a += 1
+	vm.Replace(a)
+}
+func mmbink(i Instruction, vm api.LuaVM) {
+	a, k, b, c := i.ABC()
+	a += 1
+	if k != 0 {
+		// flip
+		vm.GetConst(b)
+		vm.PushValue(a)
+	} else {
+		vm.PushValue(a)
+		vm.GetConst(b)
+	}
+
+	vm.CallMetaMethod(api.METAMETHOD[c])
+	a, _, _, _ = Instruction(vm.LastInst()).ABC()
+	a += 1
+	vm.Replace(a)
+}
 
 // R(A) := R[B] op R[C]
 func _binaryArith(i Instruction, vm api.LuaVM, op api.ArithOp) {
@@ -50,8 +91,11 @@ func _binaryArith(i Instruction, vm api.LuaVM, op api.ArithOp) {
 	c += 1
 	vm.PushValue(b)
 	vm.PushValue(c)
-	vm.Arith(op)
-	vm.Replace(a)
+	if vm.RawArith(op) {
+		vm.Replace(a)
+		vm.AddPC(1) // jmp mmbin
+		return
+	}
 }
 
 // R(A) = R(B) op sC
@@ -61,8 +105,12 @@ func _binaryscArith(i Instruction, vm api.LuaVM, op api.ArithOp) {
 	b += 1
 	vm.PushValue(b)
 	vm.PushInteger((int64(c)))
-	vm.Arith(op)
-	vm.Replace(a)
+	// rawArith will pop.
+	if vm.RawArith(op) {
+		vm.Replace(a)
+		vm.AddPC(1) // jmp mmbini
+		return
+	}
 }
 
 // R(A) = R(B) op k[C]
@@ -72,8 +120,11 @@ func _binaryKArith(i Instruction, vm api.LuaVM, op api.ArithOp) {
 	b += 1
 	vm.PushValue(b)
 	vm.GetConst(c)
-	vm.Arith(op)
-	vm.Replace(a)
+	if vm.RawArith(op) {
+		vm.Replace(a)
+		vm.AddPC(1) // jmp mmbink
+		return
+	}
 }
 
 // R(A) := op R(B)
@@ -83,8 +134,11 @@ func _unaryArith(i Instruction, vm api.LuaVM, op api.ArithOp) {
 	b += 1
 
 	vm.PushValue(b)
-	vm.Arith(op)
-	vm.Replace(a)
+	if vm.RawArith(op) {
+		vm.Replace(a)
+		vm.AddPC(1) // jmp mmbin
+		return
+	}
 }
 
 /* compare */

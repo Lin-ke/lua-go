@@ -74,6 +74,8 @@ func (L *luaState) GetMetatable(idx int) bool {
 
 // push(t[k])
 func (L *luaState) getTable(t, k luaValue, raw bool) api.LuaType {
+
+	printTable(t.(*luaTable))
 	if tbl, ok := t.(*luaTable); ok {
 		v := tbl.get(k)
 		// neglect metamethod

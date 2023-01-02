@@ -72,7 +72,7 @@ type LuaState interface {
 	RawSetI(idx int, i int64)
 	SetMetatable(idx int)
 	/* Comparison and arithmetic functions */
-	Arith(op ArithOp)
+	Arith(op ArithOp) // call metamethods
 	Compare(idx1, idx2 int, op CompareOp) bool
 	RawEqual(idx1, idx2 int) bool
 
