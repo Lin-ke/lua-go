@@ -45,6 +45,8 @@ func setTabUp(i Instruction, vm api.LuaVM) {
 
 func close(i Instruction, vm api.LuaVM) {
 	a, _, _, _ := i.ABC()
+	a += 1
 	vm.CloseUpvalues(a)
+	vm.CloseTbc(a)
 
 }

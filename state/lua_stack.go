@@ -15,7 +15,8 @@ type luaStack struct {
 	closure *closure
 	varargs []luaValue
 	pc      int
-	openuvs map[int]*upvalue //upvalues are still
+	openuvs map[int]*upvalue //upvalues are still open
+	tbcuvs  []int            // upvalues to be closed
 	/* linked list */
 	prev *luaStack
 }

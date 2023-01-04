@@ -84,6 +84,8 @@ type LuaState interface {
 	Load(chunk []byte, chunkName, mode string) int
 	Call(nArgs, nResults int)
 	TailCall(nArgs int)
+
+	Next(idx int) bool
 }
 
 func LuaUpvalueIndex(i int) int {

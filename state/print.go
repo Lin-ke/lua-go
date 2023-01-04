@@ -3,6 +3,7 @@
 import (
 	"fmt"
 	"luago54/vm"
+	"runtime"
 )
 
 type DebugInfo struct {
@@ -380,4 +381,10 @@ func printInst(i vm.Instruction) {
 		fmt.Printf("%d", ax)
 
 	}
+}
+func runFuncName() string {
+	pc := make([]uintptr, 1)
+	runtime.Callers(2, pc)
+	f := runtime.FuncForPC(pc[0])
+	return f.Name()
 }

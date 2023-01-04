@@ -47,7 +47,7 @@ func (L *luaState) Call(nArgs, nResults int) {
 			L.callLuaClosure(nArgs, nResults, c)
 		} else {
 			if DEBUG.printCall {
-				fmt.Printf("call go\n")
+				fmt.Printf("call go \n")
 			}
 			L.callGoClosure(nArgs, nResults, c)
 		}
@@ -171,11 +171,13 @@ func (L *luaState) tailCallLuaClosure(nArgs int, c *closure) {
 func (L *luaState) runLuaClosure() {
 	for {
 		inst := vm.Instruction(L.Fetch())
-		inst.Execute(L)
+		// pc point to the next inst(start from 0), so it's same with lua's (start from 1)
 		if DEBUG.printInst {
 			fmt.Printf("[%02d] %s ", L.stack.pc, inst.OpName())
 
 		}
+		inst.Execute(L)
+
 		if DEBUG.printStack {
 			printStack(L.stack)
 			fmt.Println()

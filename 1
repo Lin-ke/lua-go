@@ -1,0 +1,296 @@
+call lua @test/testnext.lua<0,0>
+[01] VARARGPREP top:9[nil][nil][nil][nil][nil][nil][nil][nil][nil]
+
+[02] NEWTABLE Set slot 1
+top:9[table][nil][nil][nil][nil][nil][nil][nil][nil]
+
+[04] SETFIELD top:9[table][nil][nil][nil][nil][nil][nil][nil][nil]
+
+[05] SETFIELD top:9[table][nil][nil][nil][nil][nil][nil][nil][nil]
+
+[06] SETFIELD top:9[table][nil][nil][nil][nil][nil][nil][nil][nil]
+
+[07] SETTABUP top:9[table][nil][nil][nil][nil][nil][nil][nil][nil]
+
+[08] GETTABUP 
+array:0
+
+map:7
+["setmetatable"]:[function] | ["next"]:[function] | ["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | ["print"]:[function] | ["getmetatable"]:[function] | 
+
+Set slot 1
+top:9[function][nil][nil][nil][nil][nil][nil][nil][nil]
+
+[09] GETTABUP 
+array:0
+
+map:7
+["print"]:[function] | ["getmetatable"]:[function] | ["setmetatable"]:[function] | ["next"]:[function] | ["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | 
+
+Set slot 2
+top:9[function][table][nil][nil][nil][nil][nil][nil][nil]
+
+[10] CALL call go 
+Set slot 4
+Set slot 3
+Set slot 2
+Set slot 1
+top:9[function][table][nil][nil][nil][nil][nil][nil][nil]
+
+[11] TFORPREP top:9[function][table][nil][nil][nil][nil][nil][nil][nil]
+
+[16] TFORCALL call go 
+Set slot 6
+Set slot 5
+top:9[function][table][nil][nil]["a"][1][nil][nil][nil]
+
+[17] TFORLOOP Set slot 3
+top:9[function][table]["a"][nil]["a"][1][nil][nil][nil]
+
+[12] GETTABUP 
+array:0
+
+map:7
+["getmetatable"]:[function] | ["setmetatable"]:[function] | ["next"]:[function] | ["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | ["print"]:[function] | 
+
+Set slot 7
+top:9[function][table]["a"][nil]["a"][1][function][nil][nil]
+
+[13] MOVE Set slot 8
+top:9[function][table]["a"][nil]["a"][1][function]["a"][nil]
+
+[14] MOVE Set slot 9
+top:9[function][table]["a"][nil]["a"][1][function]["a"][1]
+
+[15] CALL call go 
+a	Set slot 2
+1
+top:9[function][table]["a"][nil]["a"][1][function]["a"][1]
+
+[16] TFORCALL call go 
+Set slot 6
+Set slot 5
+top:9[function][table]["a"][nil]["b"][2][function]["a"][1]
+
+[17] TFORLOOP Set slot 3
+top:9[function][table]["b"][nil]["b"][2][function]["a"][1]
+
+[12] GETTABUP 
+array:0
+
+map:7
+["next"]:[function] | ["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | ["print"]:[function] | ["getmetatable"]:[function] | ["setmetatable"]:[function] | 
+
+Set slot 7
+top:9[function][table]["b"][nil]["b"][2][function]["a"][1]
+
+[13] MOVE Set slot 8
+top:9[function][table]["b"][nil]["b"][2][function]["b"][1]
+
+[14] MOVE Set slot 9
+top:9[function][table]["b"][nil]["b"][2][function]["b"][2]
+
+[15] CALL call go 
+b	Set slot 2
+2
+top:9[function][table]["b"][nil]["b"][2][function]["b"][2]
+
+[16] TFORCALL call go 
+Set slot 6
+Set slot 5
+top:9[function][table]["b"][nil]["c"][3][function]["b"][2]
+
+[17] TFORLOOP Set slot 3
+top:9[function][table]["c"][nil]["c"][3][function]["b"][2]
+
+[12] GETTABUP 
+array:0
+
+map:7
+["print"]:[function] | ["getmetatable"]:[function] | ["setmetatable"]:[function] | ["next"]:[function] | ["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | 
+
+Set slot 7
+top:9[function][table]["c"][nil]["c"][3][function]["b"][2]
+
+[13] MOVE Set slot 8
+top:9[function][table]["c"][nil]["c"][3][function]["c"][2]
+
+[14] MOVE Set slot 9
+top:9[function][table]["c"][nil]["c"][3][function]["c"][3]
+
+[15] CALL call go 
+c	Set slot 2
+3
+top:9[function][table]["c"][nil]["c"][3][function]["c"][3]
+
+[16] TFORCALL call go 
+Set slot 6
+Set slot 5
+top:9[function][table]["c"][nil][nil][nil][function]["c"][3]
+
+[17] TFORLOOP top:9[function][table]["c"][nil][nil][nil][function]["c"][3]
+
+[18] CLOSE top:9[function][table]["c"][nil][nil][nil][function]["c"][3]
+
+[19] NEWTABLE Set slot 1
+top:9[table][table]["c"][nil][nil][nil][function]["c"][3]
+
+[21] LOADK Set slot 2
+top:9[table]["a"]["c"][nil][nil][nil][function]["c"][3]
+
+[22] LOADK Set slot 3
+top:9[table]["a"]["b"][nil][nil][nil][function]["c"][3]
+
+[23] LOADK Set slot 4
+top:9[table]["a"]["b"]["c"][nil][nil][function]["c"][3]
+
+[24] SETLIST top:9[table]["a"]["b"]["c"][nil][nil][function]["c"][3]
+
+[25] SETTABUP top:9[table]["a"]["b"]["c"][nil][nil][function]["c"][3]
+
+[26] GETTABUP 
+array:0
+
+map:7
+["print"]:[function] | ["getmetatable"]:[function] | ["setmetatable"]:[function] | ["next"]:[function] | ["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | 
+
+Set slot 1
+top:9[function]["a"]["b"]["c"][nil][nil][function]["c"][3]
+
+[27] GETTABUP 
+array:0
+
+map:7
+["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | ["print"]:[function] | ["getmetatable"]:[function] | ["setmetatable"]:[function] | ["next"]:[function] | 
+
+Set slot 2
+top:9[function][table]["b"]["c"][nil][nil][function]["c"][3]
+
+[28] CALL call go 
+Set slot 4
+Set slot 3
+Set slot 2
+Set slot 1
+top:9[function][table][0][nil][nil][nil][function]["c"][3]
+
+[29] TFORPREP top:9[function][table][0][nil][nil][nil][function]["c"][3]
+
+[34] TFORCALL call go 
+
+array:3
+["a"]["b"]["c"]
+map:0
+
+
+Set slot 6
+Set slot 5
+top:9[function][table][0][nil][1]["a"][function]["c"][3]
+
+[35] TFORLOOP Set slot 3
+top:9[function][table][1][nil][1]["a"][function]["c"][3]
+
+[30] GETTABUP 
+array:0
+
+map:7
+["ipairs"]:[function] | ["t"]:[table] | ["print"]:[function] | ["getmetatable"]:[function] | ["setmetatable"]:[function] | ["next"]:[function] | ["pairs"]:[function] | 
+
+Set slot 7
+top:9[function][table][1][nil][1]["a"][function]["c"][3]
+
+[31] MOVE Set slot 8
+top:9[function][table][1][nil][1]["a"][function][1][3]
+
+[32] MOVE Set slot 9
+top:9[function][table][1][nil][1]["a"][function][1]["a"]
+
+[33] CALL call go 
+Set slot 1
+1	a
+top:9[function][table][1][nil][1]["a"][function][1]["a"]
+
+[34] TFORCALL call go 
+
+array:3
+["a"]["b"]["c"]
+map:0
+
+
+Set slot 6
+Set slot 5
+top:9[function][table][1][nil][2]["b"][function][1]["a"]
+
+[35] TFORLOOP Set slot 3
+top:9[function][table][2][nil][2]["b"][function][1]["a"]
+
+[30] GETTABUP 
+array:0
+
+map:7
+["getmetatable"]:[function] | ["setmetatable"]:[function] | ["next"]:[function] | ["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | ["print"]:[function] | 
+
+Set slot 7
+top:9[function][table][2][nil][2]["b"][function][1]["a"]
+
+[31] MOVE Set slot 8
+top:9[function][table][2][nil][2]["b"][function][2]["a"]
+
+[32] MOVE Set slot 9
+top:9[function][table][2][nil][2]["b"][function][2]["b"]
+
+[33] CALL call go 
+Set slot 1
+2	b
+top:9[function][table][2][nil][2]["b"][function][2]["b"]
+
+[34] TFORCALL call go 
+
+array:3
+["a"]["b"]["c"]
+map:0
+
+
+Set slot 6
+Set slot 5
+top:9[function][table][2][nil][3]["c"][function][2]["b"]
+
+[35] TFORLOOP Set slot 3
+top:9[function][table][3][nil][3]["c"][function][2]["b"]
+
+[30] GETTABUP 
+array:0
+
+map:7
+["pairs"]:[function] | ["ipairs"]:[function] | ["t"]:[table] | ["print"]:[function] | ["getmetatable"]:[function] | ["setmetatable"]:[function] | ["next"]:[function] | 
+
+Set slot 7
+top:9[function][table][3][nil][3]["c"][function][2]["b"]
+
+[31] MOVE Set slot 8
+top:9[function][table][3][nil][3]["c"][function][3]["b"]
+
+[32] MOVE Set slot 9
+top:9[function][table][3][nil][3]["c"][function][3]["c"]
+
+[33] CALL call go 
+Set slot 1
+3	c
+top:9[function][table][3][nil][3]["c"][function][3]["c"]
+
+[34] TFORCALL call go 
+
+array:3
+["a"]["b"]["c"]
+map:0
+
+
+Set slot 6
+Set slot 5
+top:9[function][table][3][nil][nil][nil][function][3]["c"]
+
+[35] TFORLOOP top:9[function][table][3][nil][nil][nil][function][3]["c"]
+
+[36] CLOSE top:9[function][table][3][nil][nil][nil][function][3]["c"]
+
+[37] RETURN top:9[function][table][3][nil][nil][nil][function][3]["c"]
+

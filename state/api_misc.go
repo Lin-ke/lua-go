@@ -33,6 +33,22 @@ func (L *luaState) RawLen(idx int) int {
 	}
 }
 
+// [-1, +(2|0), e]
+// http://www.lua.org/manual/5.4/manual.html#lua_next
+func (L *luaState) Next(idx int) bool {
+	val := L.stack.get(idx)
+	if t, ok := val.(*luaTable); ok {
+		key := L.stack.pop()
+		if nextKey := t.nextKey(key); nextKey != nil {
+			L.stack.push(nextKey)
+			L.stack.push(t.get(nextKey))
+			return true
+		}
+		return false
+	}
+	panic("table expected!")
+}
+
 // [-n, +1, e]
 // http://www.lua.org/manual/5.4/manual.html#lua_concat
 // TODO: complete for other datastruct

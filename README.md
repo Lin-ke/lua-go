@@ -14,13 +14,16 @@ FOLLOWING @zxh0, writer of book /implement lua by your self
 
     stack (done)
 
--> LUA VM(doing)
+-> LUA VM(done)
 
-    complete 78/82 instructions
+    complete 82/82 instructions
     
+    testing upvals and tbcs :)
     
--> Debugging tools and tests
+-> Debugging tools and tests(doing)
     
+    error
+
 ->LUA Complier
 
 # Reference:

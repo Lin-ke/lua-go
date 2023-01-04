@@ -179,3 +179,40 @@ func _floatforloop(a int, vm api.LuaVM) bool {
 	}
 	return false
 }
+
+/* 'ra' has the iterator function, 'ra + 1' has the state,
+   'ra + 2' has the control variable, and 'ra + 3' has the
+   to-be-closed variable. The call will use the stack after
+   these values (starting at 'ra + 4')
+*/
+// R[A+4], ... ,R[A+3+C] := R[A](R[A+1], R[A+2]);
+func tforcall(i Instruction, vm api.LuaVM) {
+	a, _, _, c := i.ABC()
+	a += 1
+
+	_pushFuncAndArgs(a, 3, vm)
+	// #return = c #arg = 2
+	vm.Call(2, c)
+
+	_popResults(a+4, c+1, vm)
+}
+
+// create upvalue for R[A + 3]; pc+=Bx
+// make sure tforcall will find the variable open.
+func tforprep(i Instruction, vm api.LuaVM) {
+	a, bx := i.ABx()
+	a += 1
+	vm.NewTbcUpval(a + 3)
+	vm.AddPC(bx)
+}
+
+// if R[A+2] ~= nil then { R[A]=R[A+2]; pc -= Bx }
+func tforloop(i Instruction, vm api.LuaVM) {
+	a, bx := i.ABx()
+	a += 1
+	val := vm.Get(a + 4)
+	if val != nil {
+		vm.Copy(a+4, a+2)
+		vm.AddPC(-bx)
+	}
+}

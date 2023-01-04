@@ -23,4 +23,7 @@ type LuaVM interface {
 
 	RawArith(op ArithOp) bool // 执行成功
 	CallMetaMethod(mmName string)
+
+	NewTbcUpval(idx int)
+	CloseTbc(idx int)
 }

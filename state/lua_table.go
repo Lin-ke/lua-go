@@ -10,6 +10,9 @@ type luaTable struct {
 	metatable *luaTable
 	arr       []luaValue
 	_map      map[luaValue]luaValue
+	keys      map[luaValue]luaValue // used by next(), another implementation is []luaValue
+	lastKey   luaValue              // used by next()
+	changed   bool                  // used by next()
 }
 
 func (tbl *luaTable) hasMetafield(fieldName string) bool {
@@ -102,6 +105,17 @@ func (Table *luaTable) put(key, val luaValue) {
 	}
 
 }
+func (Table *luaTable) _expandArray() {
+	// from the next.
+	for idx := int64(len(Table.arr)) + 1; true; idx++ {
+		if val, found := Table._map[idx]; found {
+			delete(Table._map, idx)
+			Table.arr = append(Table.arr, val)
+		} else {
+			break
+		}
+	}
+}
 
 func (Table *luaTable) _shrinkArray() {
 	i := len(Table.arr) - 1
@@ -113,15 +127,36 @@ func (Table *luaTable) _shrinkArray() {
 	Table.arr = Table.arr[0:i]
 
 }
+func (tbl *luaTable) nextKey(key luaValue) luaValue {
+	if tbl.keys == nil || (key == nil && tbl.changed) {
+		tbl.initKeys()
+		tbl.changed = false
+	}
 
-func (Table *luaTable) _expandArray() {
-	// from the next.
-	for idx := int64(len(Table.arr)) + 1; true; idx++ {
-		if val, found := Table._map[idx]; found {
-			delete(Table._map, idx)
-			Table.arr = append(Table.arr, val)
-		} else {
-			break
+	nextKey := tbl.keys[key]
+	if nextKey == nil && key != nil && key != tbl.lastKey {
+		panic("invalid key to 'next'")
+	}
+
+	return nextKey
+}
+
+// nil-> array(1,...,n) -> map -> lastkey
+func (tbl *luaTable) initKeys() {
+	tbl.keys = make(map[luaValue]luaValue)
+	var key luaValue = nil
+	for i, v := range tbl.arr {
+		if v != nil {
+			tbl.keys[key] = int64(i + 1)
+			key = int64(i + 1)
 		}
 	}
+	// 顺序不确定啊
+	for k, v := range tbl._map {
+		if v != nil {
+			tbl.keys[key] = k
+			key = k
+		}
+	}
+	tbl.lastKey = key
 }

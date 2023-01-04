@@ -95,8 +95,6 @@ func (L *luaState) LoadVararg(n int) {
 	L.stack.pushN(L.stack.varargs, n)
 }
 
-// tailcall in api_call.go
-
 func (L *luaState) CloseUpvalues(a int) {
 	for i, openuv := range L.stack.openuvs {
 		if i >= a-1 {
@@ -169,4 +167,47 @@ func _rawarith(a, b luaValue, op operator) luaValue {
 		}
 	}
 	return nil
+}
+
+// Insert a variable in the list of to-be-closed variables.
+func (L *luaState) NewTbcUpval(idx int) {
+
+	val := L.stack.get(idx)
+	flag := false // have __close method
+	if val == nil || val == false {
+		flag = true
+
+	} else if mm := getMetafield(val, "__close", L); mm != nil {
+		flag = true
+	}
+	if flag {
+		if L.stack.tbcuvs == nil {
+			L.stack.tbcuvs = make([]int, 1)
+			L.stack.tbcuvs[0] = idx
+			return
+		} else {
+			L.stack.tbcuvs = append(L.stack.tbcuvs, idx)
+			return
+		}
+	}
+
+	panic("non-closable value")
+
+}
+func (L *luaState) CloseTbc(idx int) {
+	for p, a := range L.stack.tbcuvs {
+		if a >= idx {
+			val := L.stack.get(a)
+			if val == nil || val == false {
+				continue
+			}
+			callOneArgMM(val, "__close", L) // nil or false returns false.
+			if p == len(L.stack.tbcuvs)-1 {
+				L.stack.tbcuvs = L.stack.tbcuvs[:p]
+			} else {
+				L.stack.tbcuvs = append(L.stack.tbcuvs[:p], L.stack.tbcuvs[p+1:]...)
+			}
+		}
+
+	}
 }

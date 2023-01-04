@@ -20,3 +20,11 @@ func jmp(i Instruction, vm api.LuaVM) {
 
 	vm.AddPC(sj)
 }
+
+// mark variable A "to be closed"
+func tbc(i Instruction, vm api.LuaVM) {
+	a, _, _, _ := i.ABC()
+	a += 1
+
+	vm.NewTbcUpval(a)
+}

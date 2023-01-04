@@ -123,3 +123,16 @@ func callMetamethod(a, b luaValue, mmName string, ls *luaState) (luaValue, bool)
 	ls.Call(2, 1)
 	return ls.stack.pop(), true
 }
+
+func callOneArgMM(a luaValue, mmName string, ls *luaState) bool {
+	var mm luaValue
+	if mm = getMetafield(a, mmName, ls); mm == nil {
+		return false
+	}
+
+	ls.stack.check(3)
+	ls.stack.push(mm)
+	ls.stack.push(a)
+	ls.Call(1, 0)
+	return true
+}
