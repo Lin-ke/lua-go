@@ -128,6 +128,7 @@ func (Table *luaTable) _shrinkArray() {
 
 }
 func (tbl *luaTable) nextKey(key luaValue) luaValue {
+	// init when first call nextkey
 	if tbl.keys == nil || (key == nil && tbl.changed) {
 		tbl.initKeys()
 		tbl.changed = false

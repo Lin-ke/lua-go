@@ -86,6 +86,9 @@ type LuaState interface {
 	TailCall(nArgs int)
 
 	Next(idx int) bool
+	//exception handle
+	Error() int
+	PCall(nArgs, nResults, msgh int) int
 }
 
 func LuaUpvalueIndex(i int) int {

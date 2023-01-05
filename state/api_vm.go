@@ -111,13 +111,15 @@ func (L *luaState) CloseUpvalues(a int) {
 	}
 }
 
-func (L *luaState) CallMetaMethod(mmName string) {
+func (L *luaState) CallMetaMethod(mmIdx int) {
 	var mm luaValue
+	mmName := api.METAMETHOD[mmIdx]
 	a := L.Get(-2)
 	b := L.Get(-1)
 	if mm = getMetafield(a, mmName, L); mm == nil {
 		if mm = getMetafield(b, mmName, L); mm == nil {
-			return // call failed.
+			msg := fmt.Sprintf("attemp to perform %s a %s with a %s", mmName, L.TypeName(typeOf(a)), L.TypeName(typeOf(b)))
+			panic(msg)
 		}
 	}
 	L.stack.check(2)
@@ -126,7 +128,6 @@ func (L *luaState) CallMetaMethod(mmName string) {
 	L.Call(2, 1)
 
 }
-
 func (L *luaState) RawArith(op api.ArithOp) bool {
 	var a, b luaValue // operands
 	b = L.stack.pop()
@@ -201,7 +202,11 @@ func (L *luaState) CloseTbc(idx int) {
 			if val == nil || val == false {
 				continue
 			}
-			callOneArgMM(val, "__close", L) // nil or false returns false.
+			if !callOneArgMM(val, "__close", L) {
+				msg := fmt.Sprintf("call %d __close failed", idx)
+				panic(msg)
+			}
+
 			if p == len(L.stack.tbcuvs)-1 {
 				L.stack.tbcuvs = L.stack.tbcuvs[:p]
 			} else {

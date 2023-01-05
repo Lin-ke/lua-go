@@ -75,3 +75,10 @@ func (L *luaState) Concat(n int) {
 	}
 	// n == 1, do nothing
 }
+
+// [-1, +0, v]
+// http://www.lua.org/manual/5.4/manual.html#lua_error
+func (L *luaState) Error() int {
+	err := L.stack.pop()
+	panic(err)
+}

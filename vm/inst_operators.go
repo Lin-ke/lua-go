@@ -44,7 +44,7 @@ func mmbin(i Instruction, vm api.LuaVM) {
 	b += 1
 	vm.PushValue(a)
 	vm.PushValue(b)
-	vm.CallMetaMethod(api.METAMETHOD[c])
+	vm.CallMetaMethod(c)
 	a, _, _, _ = Instruction(vm.LastInst()).ABC()
 	a += 1
 	vm.Replace(a)
@@ -60,7 +60,7 @@ func mmbini(i Instruction, vm api.LuaVM) {
 		vm.PushInteger((int64(b)))
 	}
 
-	vm.CallMetaMethod(api.METAMETHOD[c])
+	vm.CallMetaMethod(c)
 	a, _, _, _ = Instruction(vm.LastInst()).ABC()
 	a += 1
 	vm.Replace(a)
@@ -77,7 +77,7 @@ func mmbink(i Instruction, vm api.LuaVM) {
 		vm.GetConst(b)
 	}
 
-	vm.CallMetaMethod(api.METAMETHOD[c])
+	vm.CallMetaMethod(c)
 	a, _, _, _ = Instruction(vm.LastInst()).ABC()
 	a += 1
 	vm.Replace(a)
